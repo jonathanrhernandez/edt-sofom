@@ -1,0 +1,2560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDT/WBS - Sistema SOFOM</title>
+<style>
+  :root {
+    --color-primary: #1e3a8a;
+    --color-level1: #1e3a8a;
+    --color-level2: #2563eb;
+    --color-level3: #0891b2;
+    --color-level4: #475569;
+    --color-tbd: #d97706;
+    --color-tbd-bg: #fef3c7;
+    --color-bg: #f5f7fa;
+    --color-card: #ffffff;
+    --color-border: #cbd5e1;
+    --color-line: #64748b;
+    --color-text: #1e293b;
+    --color-text-light: #64748b;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: linear-gradient(135deg, #f0f4f8 0%, #e8eef5 100%);
+    color: var(--color-text);
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--color-level1) 0%, var(--color-level2) 100%);
+    color: white;
+    padding: 24px 32px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    position: relative;
+  }
+
+  header .subtitle {
+    font-size: 14px;
+    opacity: 0.92;
+    position: relative;
+  }
+
+  .toolbar {
+    background: var(--color-card);
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border);
+    position: sticky;
+    top: 12px;
+    z-index: 100;
+  }
+
+  .btn {
+    padding: 9px 16px;
+    border: 1px solid var(--color-border);
+    background: white;
+    color: var(--color-text);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .btn:hover {
+    background: #f1f5f9;
+    border-color: var(--color-level2);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+  }
+
+  .btn-primary:hover {
+    background: var(--color-level2);
+    border-color: var(--color-level2);
+  }
+
+  .zoom-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    padding-left: 10px;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .zoom-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .zoom-label {
+    font-size: 12px;
+    color: var(--color-text-light);
+    min-width: 48px;
+    text-align: center;
+    font-family: monospace;
+  }
+
+  .legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    background: var(--color-card);
+    border-radius: 10px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border);
+    font-size: 12px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .legend-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .diagram-wrapper {
+    background: var(--color-card);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-border);
+    overflow: auto;
+    max-height: calc(100vh - 260px);
+    min-height: 500px;
+    background-image:
+      radial-gradient(circle, #e2e8f0 1px, transparent 1px);
+    background-size: 22px 22px;
+    background-position: 10px 10px;
+  }
+
+  .diagram {
+    display: inline-block;
+    min-width: 100%;
+    padding: 30px 40px;
+    transform-origin: top left;
+    transition: transform 0.2s ease;
+  }
+
+  .tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tree ul {
+    padding-top: 24px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    list-style: none;
+  }
+
+  .tree li {
+    list-style: none;
+    text-align: center;
+    position: relative;
+    padding: 24px 8px 0 8px;
+  }
+
+  .tree li::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 24px;
+    background: var(--color-line);
+  }
+
+  .tree li::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-line);
+  }
+
+  .tree li:first-child::after { left: 50%; }
+  .tree li:last-child::after { right: 50%; }
+  .tree li:only-child::after { display: none; }
+  .tree li:only-child::before { display: block; }
+
+  .tree > ul { padding-top: 0; }
+  .tree > ul > li { padding-top: 0; }
+  .tree > ul > li::before,
+  .tree > ul > li::after { display: none; }
+
+  .node-box {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: white;
+    border: 2px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 140px;
+    max-width: 200px;
+    position: relative;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .node-box:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-level2);
+  }
+
+  .node-box .node-code {
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0.75;
+    margin-bottom: 3px;
+  }
+
+  .node-box .node-title {
+    font-weight: 600;
+    font-size: 12.5px;
+  }
+
+  .level-1 .node-box {
+    background: linear-gradient(135deg, var(--color-level1) 0%, var(--color-level2) 100%);
+    color: white;
+    border-color: var(--color-level1);
+    min-width: 220px;
+    padding: 14px 18px;
+    font-size: 14px;
+    box-shadow: var(--shadow-md);
+  }
+
+  .level-1 .node-box .node-title { font-size: 15px; }
+
+  .level-2 .node-box {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border-color: var(--color-level2);
+    color: var(--color-level2);
+    min-width: 170px;
+  }
+
+  .level-3 .node-box {
+    background: #ecfeff;
+    border-color: var(--color-level3);
+    color: var(--color-level3);
+  }
+
+  .level-4 .node-box {
+    background: #f8fafc;
+    border-color: var(--color-level4);
+    color: var(--color-level4);
+    min-width: 160px;
+  }
+
+  .level-4 .node-box:hover {
+    background: #fff7ed;
+    border-color: var(--color-tbd);
+    color: var(--color-tbd);
+  }
+
+  .level-4 .node-box::after {
+    content: '🔍';
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    font-size: 10px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .level-4 .node-box:hover::after {
+    opacity: 0.8;
+  }
+
+  /* TBD - posiblemente fuera del alcance inicial */
+  .level-4.tbd .node-box,
+  .level-3.tbd > .node-box,
+  .level-2.tbd > .node-box {
+    background: #fef2f2;
+    border-color: #dc2626;
+    color: #b91c1c;
+    border-style: dashed;
+  }
+  .level-4.tbd .node-box:hover,
+  .level-3.tbd > .node-box:hover,
+  .level-2.tbd > .node-box:hover {
+    background: #fee2e2;
+    border-color: #b91c1c;
+    color: #991b1b;
+  }
+  .tbd-badge {
+    display: inline-block;
+    background: #dc2626;
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  /* Fuera de alcance - estado más definitivo que TBD */
+  .level-4.out-of-scope .node-box {
+    background: #f3f4f6;
+    border-color: #6b7280;
+    color: #6b7280;
+    border-style: dashed;
+    opacity: 0.85;
+  }
+  .level-4.out-of-scope .node-box .node-title {
+    text-decoration: line-through;
+    text-decoration-color: rgba(107, 114, 128, 0.7);
+  }
+  .level-4.out-of-scope .node-box:hover {
+    background: #e5e7eb;
+    border-color: #4b5563;
+    color: #374151;
+    opacity: 1;
+  }
+  .out-of-scope-badge {
+    display: inline-block;
+    background: #1f2937;
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  /* N/A - Proyecto aparte */
+  .level-2.separate-project > .node-box,
+  .level-3.separate-project > .node-box,
+  .level-4.separate-project .node-box {
+    background: #eef2ff;
+    border-color: #6366f1;
+    color: #4338ca;
+    border-style: dotted;
+  }
+  .level-2.separate-project > .node-box:hover,
+  .level-3.separate-project > .node-box:hover,
+  .level-4.separate-project .node-box:hover {
+    background: #e0e7ff;
+    border-color: #4338ca;
+    color: #312e81;
+  }
+  .separate-project-badge {
+    display: inline-block;
+    background: #4338ca;
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+  .separate-project-note {
+    font-size: 10px;
+    color: #4338ca;
+    font-style: italic;
+    margin-top: 3px;
+    line-height: 1.3;
+  }
+  .modal-banner {
+    background: #eef2ff;
+    border-left: 4px solid #6366f1;
+    color: #312e81;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .modal-banner.tbd-banner {
+    background: #fef2f2;
+    border-left-color: #dc2626;
+    color: #991b1b;
+  }
+  .modal-banner.out-of-scope-banner {
+    background: #f3f4f6;
+    border-left-color: #1f2937;
+    color: #111827;
+  }
+
+  /* Tarjeta seleccionada (foco visual al hacer clic) */
+  .node-box.selected {
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.55), 0 6px 20px rgba(37, 99, 235, 0.30);
+    transform: translateY(-1px);
+    transition: box-shadow 0.18s ease, transform 0.18s ease;
+  }
+  .level-4.tbd .node-box.selected {
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.55), 0 6px 20px rgba(220, 38, 38, 0.30);
+  }
+  /* Padres en cadena hasta nivel 2 */
+  .node-box.ancestor {
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.35), 0 3px 10px rgba(37, 99, 235, 0.18);
+    transition: box-shadow 0.18s ease;
+  }
+  /* Conectores resaltados entre el nodo y sus ancestros */
+  li.ancestor-line > ul > li.ancestor-line::before,
+  li.ancestor-line > ul > li.selected-line::before,
+  li.ancestor-line > ul::before,
+  li.ancestor-line > ul > li.ancestor-line::after,
+  li.ancestor-line > ul > li.selected-line::after {
+    border-color: rgba(37, 99, 235, 0.55) !important;
+    border-width: 2.5px !important;
+  }
+
+  .toggle-icon {
+    position: absolute;
+    bottom: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--color-level2);
+    color: var(--color-level2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 1;
+    z-index: 2;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .toggle-icon:hover {
+    background: var(--color-level2);
+    color: white;
+  }
+
+  .level-3 .toggle-icon {
+    border-color: var(--color-level3);
+    color: var(--color-level3);
+  }
+  .level-3 .toggle-icon:hover {
+    background: var(--color-level3);
+    color: white;
+  }
+
+  .level-1 .toggle-icon {
+    border-color: white;
+    color: var(--color-level1);
+    background: white;
+  }
+
+  li.collapsed > ul { display: none; }
+
+  li.collapsed > .node-box .toggle-icon {
+    background: var(--color-level2);
+    color: white;
+  }
+
+  .node-box.match-highlight {
+    background: #fef3c7 !important;
+    border-color: #f59e0b !important;
+    color: #92400e !important;
+    animation: pulse 1s ease-in-out;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(245,158,11,0); }
+  }
+
+  li.search-hidden { display: none !important; }
+
+  footer {
+    text-align: center;
+    margin-top: 18px;
+    padding: 12px;
+    color: var(--color-text-light);
+    font-size: 12px;
+  }
+
+  .search-box {
+    position: relative;
+    flex: 1;
+    min-width: 220px;
+    max-width: 320px;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 9px 12px 9px 34px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-size: 13px;
+    background: #f8fafc;
+    transition: all 0.2s;
+  }
+
+  .search-box input:focus {
+    outline: none;
+    border-color: var(--color-level2);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  }
+
+  .search-box::before {
+    content: '🔍';
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    opacity: 0.5;
+  }
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modal-overlay.show { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .modal {
+    background: white;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 780px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+    animation: slideUp 0.3s ease;
+    overflow: hidden;
+  }
+
+  .modal-header {
+    background: linear-gradient(135deg, var(--color-level1) 0%, var(--color-level2) 100%);
+    color: white;
+    padding: 22px 26px;
+    position: relative;
+  }
+
+  .modal-code {
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 12px;
+    opacity: 0.85;
+    background: rgba(255,255,255,0.2);
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-bottom: 6px;
+  }
+
+  .modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .modal-path {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 6px;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover {
+    background: rgba(255,255,255,0.35);
+    transform: rotate(90deg);
+  }
+
+  .modal-tabs {
+    display: flex;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0 8px;
+    overflow-x: auto;
+  }
+
+  .modal-tab {
+    padding: 14px 20px;
+    background: none;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-light);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .modal-tab:hover {
+    color: var(--color-level2);
+    background: rgba(59,130,246,0.05);
+  }
+
+  .modal-tab.active {
+    color: var(--color-level2);
+    border-bottom-color: var(--color-level2);
+    background: white;
+  }
+
+  .modal-tab .tab-icon {
+    font-size: 14px;
+  }
+
+  .modal-body {
+    padding: 26px 30px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeIn 0.25s ease; }
+
+  .detail-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .detail-list li {
+    padding: 12px 14px 12px 40px;
+    margin-bottom: 8px;
+    background: #f8fafc;
+    border-left: 3px solid var(--color-level2);
+    border-radius: 6px;
+    position: relative;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-text);
+  }
+
+  .detail-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 14px;
+    top: 12px;
+    width: 18px;
+    height: 18px;
+    background: var(--color-level2);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+  }
+
+  .detail-list.rules li {
+    border-left-color: var(--color-level3);
+  }
+
+  .detail-list.rules li::before {
+    background: var(--color-level3);
+    content: '§';
+    font-size: 13px;
+  }
+
+  .detail-list li strong {
+    color: var(--color-level1);
+    font-weight: 700;
+  }
+
+  .detail-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-light);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .estimation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .estimation-card {
+    background: #f8fafc;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    border-left: 4px solid var(--color-level2);
+  }
+
+  .estimation-card .label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .estimation-card .value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .estimation-card.priority-high { border-left-color: #dc2626; }
+  .estimation-card.priority-medium { border-left-color: var(--color-tbd); }
+  .estimation-card.priority-low { border-left-color: #16a34a; }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .tag {
+    background: #e0f2fe;
+    color: var(--color-level2);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    border: 1px solid #bae6fd;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--color-text-light);
+    font-size: 14px;
+  }
+
+  @media (max-width: 640px) {
+    body { padding: 10px; }
+    header { padding: 18px; }
+    header h1 { font-size: 20px; }
+    .toolbar { position: static; }
+    .zoom-group { margin-left: 0; border-left: none; padding-left: 0; }
+    .modal-header { padding: 18px 20px; }
+    .modal-title { font-size: 17px; }
+    .modal-body { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Estructura de Desglose de Trabajo (EDT/WBS)</h1>
+    <div class="subtitle">Sistema Integral de Gestión de Crédito — SOFOM</div>
+  </header>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Buscar en el diagrama..." />
+    </div>
+    <button class="btn btn-primary" onclick="expandAll()">⊞ Expandir todo</button>
+    <button class="btn" onclick="collapseAll()">⊟ Contraer todo</button>
+    <button class="btn" onclick="expandToLevel(2)">Hasta N2</button>
+    <button class="btn" onclick="expandToLevel(3)">Hasta N3</button>
+
+    <div class="zoom-group">
+      <button class="btn zoom-btn" onclick="zoom(-0.1)" title="Alejar">−</button>
+      <span class="zoom-label" id="zoom-label">100%</span>
+      <button class="btn zoom-btn" onclick="zoom(0.1)" title="Acercar">+</button>
+      <button class="btn zoom-btn" onclick="resetZoom()" title="Restablecer">⟲</button>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-swatch" style="background: linear-gradient(135deg,#1e3a8a,#2563eb);"></div>
+      <span>Nivel 1 — Proyecto</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="background: linear-gradient(135deg,#dbeafe,#bfdbfe); border-color:#2563eb;"></div>
+      <span>Nivel 2 — Módulos</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:#ecfeff; border-color:#0891b2;"></div>
+      <span>Nivel 3 — Componentes</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:#f8fafc; border-color:#475569;"></div>
+      <span>Nivel 4 — Tareas (clic para ver detalle)</span>
+    </div>
+    <div class="legend-item" style="margin-left:auto; color:var(--color-text-light);">
+      💡 Clic en nodos con hijos para expandir/contraer · Clic en tareas para ver detalle
+    </div>
+  </div>
+
+  <div class="diagram-wrapper" id="wrapper">
+    <div class="diagram" id="diagram"></div>
+  </div>
+
+  <footer>
+    EDT/WBS interactivo • Sistema SOFOM • Usa los controles de zoom y desplázate para navegar el diagrama
+  </footer>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-code" id="modal-code">—</div>
+        <div class="modal-title" id="modal-title">—</div>
+        <div class="modal-path" id="modal-path">—</div>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-tabs">
+        <button class="modal-tab active" data-tab="description">
+          <span class="tab-icon">📋</span> Descripción
+        </button>
+        <button class="modal-tab" data-tab="rules">
+          <span class="tab-icon">⚖️</span> Reglas de Negocio
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="tab-panel active" id="tab-description">
+          <div class="modal-banner" id="modal-banner" style="display:none;"></div>
+          <div class="detail-section-title">Descripción y Alcance</div>
+          <ul class="detail-list" id="desc-list"></ul>
+          <div class="detail-section-title" id="stack-title" style="margin-top:18px;">Stack Tecnológico / Integraciones</div>
+          <div class="tag-list" id="desc-tags"></div>
+        </div>
+        <div class="tab-panel" id="tab-rules">
+          <div class="detail-section-title">Reglas de Negocio</div>
+          <ul class="detail-list rules" id="rules-list"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const data = {
+  code: '1', title: 'Sistema SOFOM (Alcance Total)', level: 1,
+  children: [
+    {
+      code: '1.0', title: 'Diseño UX/UI y Arquitectura Base', level: 2,
+      children: [
+        {
+          code: '1.1', title: 'Definición de Experiencia de Usuario', level: 3,
+          children: [
+            { code: '1.1.1', title: 'User Flows y Mapas de Navegación', level: 4,
+              details: {
+                description: [
+                  '<strong>Mapeo End-to-End:</strong> Diagramar flujos por rol (solicitante, analista, mesa de control, tesorería, admin, super admin).',
+                  '<strong>Flujos Críticos:</strong> Onboarding digital, workflow de originación (6 estados), kanban de cartera, cobranza y dispersión SPEI.',
+                  '<strong>Caminos Alternos:</strong> Rechazos, reintentos, timeouts y rutas de excepción.'
+                ],
+                rules: [
+                  'Cada flujo debe tener punto de entrada y salida definidos.',
+                  'Los flujos críticos requieren validación con stakeholders antes de pasar a wireframes.',
+                  'Mínimo 3 user personas documentadas por rol.'
+                ],
+                estimation: { effort: '5 días', priority: 'Alta', team: '1 UX', complexity: 'Media',
+                  tags: ['Figma', 'Miro', 'User Research'] }
+              }
+            },
+            { code: '1.1.2', title: 'Wireframes de Baja Fidelidad (Estructura)', level: 4,
+              details: {
+                description: [
+                  '<strong>Esqueletos Funcionales:</strong> Estructura de cada pantalla sin color ni branding, enfocados en jerarquía de información.',
+                  '<strong>Responsive desde el inicio:</strong> Wireframes en al menos dos breakpoints (mobile y desktop).',
+                  '<strong>Anotaciones:</strong> Cada wireframe incluye notas de comportamiento para el equipo de desarrollo.'
+                ],
+                rules: [
+                  'Todos los wireframes deben validarse con el cliente antes de avanzar a alta fidelidad.',
+                  'Incluir estados vacíos, de error y de carga.',
+                  'No mezclar decisiones visuales en esta etapa.'
+                ],
+                estimation: { effort: '7 días', priority: 'Alta', team: '1 UX', complexity: 'Media',
+                  tags: ['Figma', 'Whimsical'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '1.2', title: 'Diseño de Interfaz de Usuario', level: 3,
+          children: [
+            { code: '1.2.1', title: 'Design System Base (Atómico)', level: 4,
+              details: {
+                description: [
+                  '<strong>Metodología Atómica:</strong> Átomos (colores, tipografía, espaciado), moléculas (inputs, botones), organismos (tarjetas, tablas).',
+                  '<strong>Design Tokens:</strong> Variables centralizadas listas para Tailwind/CSS en Next.js.',
+                  '<strong>Documentación Viva:</strong> Biblioteca navegable en Storybook.'
+                ],
+                rules: [
+                  'Todos los componentes deben ser accesibles (WCAG 2.1 AA).',
+                  'Soporte para tema claro y oscuro desde el inicio.',
+                  'Tokens reutilizables entre módulos y tenants.'
+                ],
+                estimation: { effort: '10 días', priority: 'Alta', team: '1 UI + 1 Frontend', complexity: 'Alta',
+                  tags: ['Figma', 'Storybook', 'Tailwind', 'Next.js'] }
+              }
+            },
+            { code: '1.2.2', title: 'Prototipos de Alta Fidelidad e Interacciones', level: 4,
+              details: {
+                description: [
+                  '<strong>Prototipo Navegable:</strong> Flujos completos clickeables con transiciones y micro-interacciones.',
+                  '<strong>Validación con usuarios:</strong> Sesiones de pruebas de usabilidad antes de pasar a desarrollo.',
+                  '<strong>Handoff a Desarrollo:</strong> Specs exportables con medidas, assets e estados.'
+                ],
+                rules: [
+                  'Validación con al menos 5 usuarios reales antes de cerrar el diseño.',
+                  'Cada pantalla debe tener sus estados (empty, loading, error, success) diseñados.',
+                  'Aprobación formal del cliente por escrito.'
+                ],
+                estimation: { effort: '8 días', priority: 'Alta', team: '1 UI', complexity: 'Media',
+                  tags: ['Figma', 'Usability Testing'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '1.3', title: 'Arquitectura y Setup Inicial', level: 3,
+          children: [
+            { code: '1.3.1', title: 'Modelado de Base de Datos (Supabase / PostgreSQL)', level: 4,
+              details: {
+                description: [
+                  '<strong>Esquema Multi-tenant:</strong> Todas las tablas transaccionales con columna tenant_id indexada.',
+                  '<strong>Entidades Core:</strong> Tenants, Usuarios, Clientes, Créditos, Amortizaciones, Pagos, Operaciones Comerciales, Bitácoras.',
+                  '<strong>Relaciones y Constraints:</strong> Modelo normalizado con vistas materializadas para reportes pesados.'
+                ],
+                rules: [
+                  'Cada tabla transaccional debe tener created_at, updated_at, tenant_id y created_by.',
+                  'Las columnas monetarias se almacenan en numeric(18,4) para evitar errores de redondeo.',
+                  'Migraciones versionadas y reversibles con Supabase CLI.'
+                ],
+                estimation: { effort: '8 días', priority: 'Crítica', team: '1 Backend Senior + 1 DBA', complexity: 'Alta',
+                  tags: ['Supabase', 'PostgreSQL', 'SQL', 'Data Modeling'] }
+              }
+            },
+            { code: '1.3.2', title: 'Configuración de Infraestructura (Vercel + CI/CD)', level: 4,
+              details: {
+                description: [
+                  '<strong>Deploy en Vercel:</strong> Entornos separados (dev, staging, producción) con previews por branch.',
+                  '<strong>CI/CD:</strong> Pipeline automatizado con pruebas, lint y type-check antes de cada deploy.',
+                  '<strong>Secrets y Variables:</strong> Gestión segura de claves (Supabase, STP, ZapSign, FaceMatch, Buró) por entorno.'
+                ],
+                rules: [
+                  'Ningún secreto se commitea al repositorio.',
+                  'Cada PR a main requiere revisión + pipeline verde.',
+                  'Backups diarios automáticos de la BD Supabase.'
+                ],
+                estimation: { effort: '4 días', priority: 'Alta', team: '1 DevOps', complexity: 'Media',
+                  tags: ['Vercel', 'GitHub Actions', 'Supabase', 'Next.js'] }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      code: '2.0', title: 'Administración y Multi-Tenancy (White Label)', level: 2,
+      children: [
+        {
+          code: '2.1', title: 'Configuración de Marca Blanca', level: 3,
+          children: [
+            { code: '2.1.1', title: 'Gestión de Identidad Visual (Logos, Favicons, Paletas de Colores)', level: 4,
+              details: {
+                description: [
+                  '<strong>Panel de Branding:</strong> Cada financiera puede cargar su logo, favicon y definir su paleta de colores primaria/secundaria.',
+                  '<strong>Preview en Vivo:</strong> Vista previa del cambio aplicado antes de publicarlo.',
+                  '<strong>Almacenamiento en Supabase Storage:</strong> Los assets se sirven desde CDN para garantizar velocidad.'
+                ],
+                rules: [
+                  'El logo debe cumplir con dimensiones y pesos máximos (PNG/SVG).',
+                  'La paleta debe validar contraste mínimo WCAG AA.',
+                  'Solo el Super Admin puede aprobar cambios de marca a nivel producción.'
+                ],
+                estimation: { effort: '5 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Supabase Storage', 'Next.js', 'Tailwind'] }
+              }
+            },
+            { code: '2.1.2', title: 'Configuración de Dominios y Subdominios por Financiera', level: 4,
+              details: {
+                description: [
+                  '<strong>Subdominios Dinámicos:</strong> Cada financiera tiene su propio subdominio (financieraA.sofom.com) gestionado vía Vercel.',
+                  '<strong>Dominios Custom:</strong> Soporte opcional para dominios propios (creditos.financieraA.com).',
+                  '<strong>SSL Automatizado:</strong> Emisión y renovación automática de certificados por Vercel.'
+                ],
+                rules: [
+                  'Cada subdominio debe ser único en todo el sistema.',
+                  'Validación DNS previa antes de activar un dominio custom.',
+                  'Middleware Next.js resuelve tenant a partir del host.'
+                ],
+                estimation: { effort: '3 días', priority: 'Media', team: '1 DevOps', complexity: 'Media',
+                  tags: ['Vercel', 'Next.js Middleware', 'DNS'] }
+              }
+            },
+            { code: '2.1.3', title: 'Personalización de Notificaciones (Templates Email/WhatsApp)', level: 4,
+              details: {
+                description: [
+                  '<strong>Editor de Plantillas:</strong> WYSIWYG por cada financiera con variables dinámicas (nombre, monto, fecha).',
+                  '<strong>Canales:</strong> WhatsApp Business API y Email transaccional, ambos orquestados con n8n.',
+                  '<strong>Versionado:</strong> Historial de cambios y posibilidad de reversión.'
+                ],
+                rules: [
+                  'Las plantillas deben preservar campos obligatorios por normativa (pie legal, teléfono de atención).',
+                  'Todo mensaje enviado queda registrado en bitácora.',
+                  'Aprobación obligatoria antes de publicar cambios a producción.'
+                ],
+                estimation: { effort: '5 días', priority: 'Media', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['n8n', 'WhatsApp Business API', 'Email', 'Handlebars'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '2.2', title: 'Seguridad y Control de Acceso', level: 3,
+          children: [
+            { code: '2.2.1', title: 'Aislamiento de Datos por Inquilino (Row Level Security)', level: 4,
+              details: {
+                description: [
+                  '<strong>RLS a nivel PostgreSQL:</strong> Políticas RLS de Supabase que filtran automáticamente por tenant_id.',
+                  '<strong>Imposible cruzar información:</strong> Incluso un bug de aplicación no puede exponer datos de otra financiera.',
+                  '<strong>Auditoría de Accesos:</strong> Logging de cada consulta cross-tenant.'
+                ],
+                rules: [
+                  'Toda tabla transaccional debe incluir columna tenant_id indexada y política RLS.',
+                  'Las queries sin tenant_id son rechazadas por la BD.',
+                  'Pruebas automatizadas de aislamiento en el pipeline de CI.'
+                ],
+                estimation: { effort: '8 días', priority: 'Crítica', team: '1 Backend + 1 DBA', complexity: 'Alta',
+                  tags: ['Supabase', 'PostgreSQL RLS', 'Security'] }
+              }
+            },
+            { code: '2.2.2', title: 'Autenticación y Doble Factor (2FA)', level: 4,
+              details: {
+                description: [
+                  '<strong>Supabase Auth:</strong> Login con email/contraseña, magic link y SSO opcional.',
+                  '<strong>TOTP / Email:</strong> 2FA obligatorio para usuarios administrativos.',
+                  '<strong>Recordar Dispositivo:</strong> Opción de confiar en dispositivo por 30 días.'
+                ],
+                rules: [
+                  '2FA obligatorio para todos los usuarios con rol administrativo.',
+                  'Al habilitarlo, el usuario debe verificar el método antes de cerrar sesión.',
+                  'Máximo 5 intentos fallidos antes de bloqueo temporal.'
+                ],
+                estimation: { effort: '4 días', priority: 'Crítica', team: '1 Backend', complexity: 'Media',
+                  tags: ['Supabase Auth', 'TOTP', 'JWT'] }
+              }
+            },
+            { code: '2.2.3', title: 'Gestión de Perfiles y Usuarios (Roles por Financiera)', level: 4,
+              details: {
+                description: [
+                  '<strong>Aislamiento:</strong> Un administrador de la "Financiera A" solo puede crear y gestionar usuarios de su propia empresa, sin ver ni afectar a los de la "Financiera B".',
+                  '<strong>Roles Personalizados:</strong> Cada financiera puede decidir qué pantallas ve su equipo (ej. unos pueden ver reportes de cobranza y otros solo originación).',
+                  '<strong>Jerarquía Multi-inquilino:</strong> Tú tienes un "Super Admin" que ve todo, pero cada cliente tiene su propio control de usuarios local.'
+                ],
+                rules: [
+                  'Cada financiera tiene un número limitado de usuarios según su plan contratado (ej. 25 usuarios).',
+                  'Solo el Super Admin global puede crear nuevos tenants (financieras).',
+                  'Los roles son heredables y combinables por módulo (RBAC granular).',
+                  'Desactivación de usuarios preserva historial; no se permite borrado físico.'
+                ],
+                estimation: { effort: '7 días', priority: 'Crítica', team: '1 Full-Stack', complexity: 'Alta',
+                  tags: ['Supabase Auth', 'PostgreSQL RLS', 'RBAC', 'Multi-Tenant'] }
+              }
+            },
+            { code: '2.2.4', title: 'Bitácora de Auditoría Global e Inmutable', level: 4,
+              details: {
+                description: [
+                  '<strong>Log Inmutable:</strong> Registro append-only de toda acción de usuario con hash encadenado.',
+                  '<strong>Metadata Completa:</strong> Usuario, IP, navegador, timestamp UTC, acción, payload.',
+                  '<strong>Retención Legal:</strong> Conservación mínima de 10 años para cumplimiento regulatorio.'
+                ],
+                rules: [
+                  'Las bitácoras no pueden modificarse ni eliminarse por ningún rol.',
+                  'Exportación disponible en formato CSV y JSON para auditorías CNBV.',
+                  'Alertas automáticas ante patrones sospechosos (ej. logins desde múltiples países).'
+                ],
+                estimation: { effort: '5 días', priority: 'Alta', team: '1 Backend', complexity: 'Media',
+                  tags: ['Supabase', 'PostgreSQL', 'Event Sourcing'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '2.3', title: 'Configuración de Negocio', level: 3,
+          children: [
+            { code: '2.3.1', title: 'Catálogos Maestros y Administración', level: 4,
+              details: {
+                description: [
+                  '<strong>Catálogos Centralizados:</strong> Estados civiles, ocupaciones, tipos de crédito, documentos requeridos, motivos de operaciones comerciales.',
+                  '<strong>Administración por Tenant:</strong> Cada financiera activa/desactiva valores y agrega los propios.',
+                  '<strong>APIs Internas:</strong> Los catálogos se consumen desde todos los módulos.'
+                ],
+                rules: [
+                  'Los catálogos maestros son globales pero cada financiera puede activar/desactivar valores.',
+                  'Cambios en catálogos no afectan expedientes ya iniciados (versionado).',
+                  'Todo cambio queda auditado con usuario y fecha.'
+                ],
+                estimation: { effort: '7 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'React'] }
+              }
+            },
+            { code: '2.3.2', title: 'Configuración por Convenio (Tasas, Montos, Edades)', level: 4,
+              details: {
+                description: [
+                  '<strong>Convenios como Productos:</strong> Cada convenio/empresa cliente tiene su producto parametrizable.',
+                  '<strong>Parámetros:</strong> Tasa fija o variable, plazos permitidos, monto mínimo/máximo, edad mínima/máxima.',
+                  '<strong>Vigencias:</strong> Los cambios de tasa tienen fecha de entrada en vigor.'
+                ],
+                rules: [
+                  'No se permite cambiar parámetros de créditos ya otorgados.',
+                  'Las tasas deben cumplir con el CAT máximo permitido por Banxico.',
+                  'Validación automática al cotizar: si no cumple criterios, se rechaza.'
+                ],
+                estimation: { effort: '6 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'Rules Engine'] }
+              }
+            },
+            { code: '2.3.3', title: 'Gestor de Plantillas Legales Dinámicas', level: 4,
+              details: {
+                description: [
+                  '<strong>Editor de Contratos:</strong> WYSIWYG con placeholders que se rellenan al momento de firma.',
+                  '<strong>Versiones Vigentes:</strong> Solo una versión activa a la vez por financiera y tipo de crédito.',
+                  '<strong>Histórico:</strong> Conservación de todas las versiones firmadas para auditoría.'
+                ],
+                rules: [
+                  'Toda plantilla nueva debe ser validada por el área legal antes de activarse.',
+                  'Los contratos firmados conservan la versión de plantilla usada en esa fecha.',
+                  'Exportación obligatoria a PDF/A para conservación a largo plazo.'
+                ],
+                estimation: { effort: '7 días', priority: 'Media', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Docx-Templater', 'PDF/A', 'Supabase Storage'] }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      code: '3.0', title: 'Originación de Crédito (Onboarding Digital)', level: 2,
+      children: [
+        {
+          code: '3.1', title: 'Workflow de Solicitud (Kanban)', level: 3,
+          children: [
+            { code: '3.1.1', title: 'Estados del Workflow: Registro → Mesa Control → Firma → Tesorería → Aprobado/Rechazado', level: 4,
+              details: {
+                description: [
+                  '<strong>Tablero Kanban:</strong> Cada solicitud avanza por columnas: Registro, Mesa de Control, Enviar a Firma, Revisión Tesorería, Aprobado, Rechazado.',
+                  '<strong>Asignación por Rol:</strong> Cada estado tiene responsables definidos (analista, mesa de control, tesorería).',
+                  '<strong>Drag & Drop / Botones:</strong> Los usuarios avanzan expedientes con un clic según permisos.'
+                ],
+                rules: [
+                  'Solo los roles autorizados pueden mover un expediente entre estados.',
+                  'Cada transición registra usuario, fecha, motivo y comentarios.',
+                  'No se permite regresar a estados previos sin justificación documentada.',
+                  'Notificaciones automáticas al siguiente responsable al cambiar de estado.'
+                ],
+                estimation: { effort: '10 días', priority: 'Crítica', team: '1 Backend + 1 Frontend', complexity: 'Alta',
+                  tags: ['Next.js', 'Supabase', 'React DnD', 'Workflow Engine'] }
+              }
+            },
+            { code: '3.1.2', title: 'Transiciones, Validaciones y Notificaciones', level: 4,
+              details: {
+                description: [
+                  '<strong>Validaciones Pre-transición:</strong> Para avanzar a "Enviar a Firma" deben estar OK Buró, Listas Negras, Biométrico, expediente completo.',
+                  '<strong>Reglas por Convenio:</strong> Cada producto define qué validaciones son obligatorias.',
+                  '<strong>Notificaciones:</strong> WhatsApp/Email al solicitante y al responsable del siguiente paso (via n8n).'
+                ],
+                rules: [
+                  'Una solicitud no puede avanzar si falta cualquier validación obligatoria.',
+                  'Toda transición genera una notificación WhatsApp/Email.',
+                  'Los rechazos requieren motivo seleccionado de catálogo + comentario libre.'
+                ],
+                estimation: { effort: '6 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Alta',
+                  tags: ['n8n', 'WhatsApp Business API', 'Email', 'Supabase'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '3.2', title: 'Captura de Solicitud', level: 3,
+          children: [
+            { code: '3.2.1', title: 'Consulta por RFC / Cliente Histórico', level: 4,
+              details: {
+                description: [
+                  '<strong>Detección de Cliente Existente:</strong> Al ingresar RFC, el sistema busca en la BD y precarga sus datos si ya fue cliente.',
+                  '<strong>Historial Consolidado:</strong> Muestra créditos previos, comportamiento de pago y documentos ya capturados.',
+                  '<strong>Agilización:</strong> Evita recapturar datos y permite reutilizar documentos vigentes.'
+                ],
+                rules: [
+                  'El cliente existente queda asociado a la nueva solicitud como "Renovación" o "Compra".',
+                  'Los documentos con vigencia expirada deben volver a cargarse.',
+                  'El historial incluye indicadores de cartera vencida previa.'
+                ],
+                estimation: { effort: '5 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'PostgreSQL'] }
+              }
+            },
+            { code: '3.2.2', title: 'Datos Personales, Vivienda y Laborales', level: 4,
+              details: {
+                description: [
+                  '<strong>Formulario Multi-paso:</strong> Pestañas lógicas: Datos Básicos, Referencias, Datos Laborales, PLD, Datos Complementarios.',
+                  '<strong>Validación en Vivo:</strong> CURP, RFC, códigos postales contra servicios externos.',
+                  '<strong>Guardado Automático:</strong> El solicitante/analista puede retomar la solicitud donde la dejó.'
+                ],
+                rules: [
+                  'Los campos obligatorios dependen del tipo de crédito y convenio.',
+                  'La CURP debe validarse contra RENAPO antes de aceptar.',
+                  'Máximo 30 días para completar una solicitud iniciada.'
+                ],
+                estimation: { effort: '10 días', priority: 'Alta', team: '1 Frontend + 1 Backend', complexity: 'Media',
+                  tags: ['Next.js', 'React Hook Form', 'Supabase', 'Zod'] }
+              }
+            },
+            { code: '3.2.3', title: 'Referencias, Dependientes, Aval y Testigos', level: 4,
+              details: {
+                description: [
+                  '<strong>Referencias Personales:</strong> Captura de contactos que conocen al solicitante (nombre, parentesco, teléfono).',
+                  '<strong>Dependientes Económicos:</strong> Listado de personas que dependen del solicitante.',
+                  '<strong>Aval:</strong> Captura completa del aval con sus propios documentos y biométrico.',
+                  '<strong>Testigos:</strong> Datos de testigos requeridos para firma del contrato.'
+                ],
+                rules: [
+                  'El aval pasa por el mismo flujo de validación (Buró, Listas Negras, Biométrico) que el acreditado.',
+                  'Mínimo 2 referencias personales no familiares por solicitud.',
+                  'Los testigos deben tener identificación oficial vigente registrada.'
+                ],
+                estimation: { effort: '7 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'React Hook Form'] }
+              }
+            },
+            { code: '3.2.4', title: 'Tipo de Crédito (Nuevo / Renovación / Compra / Adelanto)', level: 4,
+              details: {
+                description: [
+                  '<strong>Selección al Inicio:</strong> El operador selecciona el tipo que determina el flujo y documentos requeridos.',
+                  '<strong>Renovación:</strong> Aplica a clientes existentes con buen comportamiento.',
+                  '<strong>Compra de Cartera:</strong> Absorbe crédito de otra institución.',
+                  '<strong>Adelanto:</strong> Producto específico con su propio tarifario.'
+                ],
+                rules: [
+                  'Cada tipo activa diferentes validaciones y documentos obligatorios.',
+                  'Las renovaciones solo se ofrecen a clientes sin cartera vencida activa.',
+                  'El tipo queda congelado una vez enviado a Mesa de Control.'
+                ],
+                estimation: { effort: '4 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'Rules Engine'] }
+              }
+            },
+            { code: '3.2.5', title: 'Cuentas Bancarias Múltiples del Acreditado', level: 4,
+              details: {
+                description: [
+                  '<strong>Alta de N Cuentas:</strong> Un cliente puede registrar varias cuentas CLABE para recibir dispersión.',
+                  '<strong>Cuenta Default:</strong> Se marca una como predeterminada para dispersión automática.',
+                  '<strong>Validación CLABE:</strong> Cada CLABE se valida con STP antes de guardarse.'
+                ],
+                rules: [
+                  'Solo una cuenta puede estar marcada como default por cliente.',
+                  'Las CLABEs deben corresponder a bancos participantes de SPEI.',
+                  'Todo cambio de cuenta default queda auditado.'
+                ],
+                estimation: { effort: '4 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['STP API', 'Supabase', 'Next.js'] }
+              }
+            },
+            { code: '3.2.6', title: 'Cotizador y Tabla de Amortización Preliminar', level: 4,
+              details: {
+                description: [
+                  '<strong>Cálculo en Línea:</strong> El operador ajusta monto y plazo y ve en tiempo real pagos y CAT.',
+                  '<strong>Tabla Preliminar:</strong> Vista previa de amortización antes de formalizar.',
+                  '<strong>Comparador:</strong> Posibilidad de comparar distintos escenarios (plazos, montos).'
+                ],
+                rules: [
+                  'El cotizador respeta los parámetros del convenio (tasas, topes, edades).',
+                  'La cotización preliminar tiene vigencia de 7 días.',
+                  'El CAT debe calcularse y mostrarse conforme a Banxico.'
+                ],
+                estimation: { effort: '5 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Decimal.js', 'Financial Math'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '3.3', title: 'Validación y Compliance', level: 3, tbd: true,
+          children: [
+            { code: '3.3.1', title: 'OCR con IA para Extracción Documental', level: 4, tbd: true,
+              details: {
+                description: [
+                  '<strong>Extracción Automática:</strong> INE, comprobantes de domicilio, recibos de nómina, CURP.',
+                  '<strong>IA de Visión:</strong> Servicio de visión por IA para lectura y validación de documentos.',
+                  '<strong>Prellenado:</strong> Los datos extraídos prellenan el formulario del solicitante.'
+                ],
+                rules: [
+                  'Confianza mínima del OCR del 85% para auto-aceptar; por debajo va a revisión manual.',
+                  'Los documentos se almacenan cifrados en Supabase Storage con política RLS por tenant.',
+                  'El INE debe coincidir con el biométrico (rostro).'
+                ],
+                estimation: { effort: '10 días', priority: 'Alta', team: '1 Backend + 1 ML', complexity: 'Alta',
+                  tags: ['IA Visión', 'Supabase Storage', 'Next.js'] }
+              }
+            },
+            { code: '3.3.2', title: 'Consulta Buró de Crédito / Círculo de Crédito', level: 4, tbd: true,
+              details: {
+                description: [
+                  '<strong>Integración API:</strong> Consulta en vivo a Buró de Crédito y Círculo de Crédito.',
+                  '<strong>Score y Alertas:</strong> Lectura del score y reporte de obligaciones vigentes y vencidas.',
+                  '<strong>Almacenamiento Controlado:</strong> El reporte se guarda cifrado con acceso limitado por rol.'
+                ],
+                rules: [
+                  'Consulta con autorización expresa del solicitante (NIP del Buró).',
+                  'Los resultados se almacenan por un máximo de 90 días.',
+                  'La consulta del aval es obligatoria y con su propio NIP.'
+                ],
+                estimation: { effort: '8 días', priority: 'Crítica', team: '1 Backend', complexity: 'Alta',
+                  tags: ['Buró de Crédito', 'Círculo de Crédito', 'API REST'] }
+              }
+            },
+            { code: '3.3.3', title: 'Listas Negras (OFAC, SAT, PEP, PLD)', level: 4, tbd: true,
+              details: {
+                description: [
+                  '<strong>Listas Consultadas:</strong> OFAC, SAT (69-B), PEP (Personas Políticamente Expuestas), listas internas PLD.',
+                  '<strong>Match Automático:</strong> El sistema compara acreditado, aval y testigos contra todas las listas.',
+                  '<strong>Trazabilidad:</strong> Evidencia de la consulta y resultado se archiva con la solicitud.'
+                ],
+                rules: [
+                  'Coincidencia en OFAC o PEP → rechazo automático con escalamiento al Oficial de Cumplimiento.',
+                  'Las listas se actualizan automáticamente a diario.',
+                  'Las consultas a listas negras quedan en bitácora inmutable.'
+                ],
+                estimation: { effort: '6 días', priority: 'Crítica', team: '1 Backend', complexity: 'Alta',
+                  tags: ['OFAC', 'SAT', 'PLD', 'PEP', 'n8n'] }
+              }
+            },
+            { code: '3.3.4', title: 'Validación Biométrica (FaceMatch + Prueba de Vida)', level: 4, outOfScope: true,
+              details: {
+                description: [
+                  '<strong>Prueba de Vida:</strong> Video selfie con instrucciones aleatorias (gestos).',
+                  '<strong>FaceMatch:</strong> Comparación facial entre selfie y fotografía del INE.',
+                  '<strong>Validación INE:</strong> Consulta al padrón del INE para autenticidad.'
+                ],
+                rules: [
+                  'Score de match facial mínimo del 90% para avanzar.',
+                  'La prueba de vida es obligatoria para acreditado y aval antes de firmar.',
+                  'Los intentos fallidos consecutivos (>3) bloquean la solicitud para revisión manual.'
+                ],
+                estimation: { effort: '8 días', priority: 'Crítica', team: '1 Backend', complexity: 'Alta',
+                  tags: ['FaceMatch', 'Biometría', 'Next.js'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '3.4', title: 'Formalización y Firma', level: 3,
+          children: [
+            { code: '3.4.1', title: 'Generación Automática de Contrato', level: 4,
+              details: {
+                description: [
+                  '<strong>Merge de Plantilla + Datos:</strong> El sistema genera el contrato usando la plantilla legal vigente y los datos de la solicitud.',
+                  '<strong>Multi-documento:</strong> Contrato, pagaré, autorización de descuento por nómina, anexos.',
+                  '<strong>Vista Previa:</strong> El operador revisa antes de enviar a firma.'
+                ],
+                rules: [
+                  'La versión de plantilla usada queda registrada con el contrato.',
+                  'El contrato generado es inmutable una vez enviado a firma.',
+                  'PDF final se guarda cifrado en Supabase Storage.'
+                ],
+                estimation: { effort: '6 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Docx-Templater', 'PDF', 'Supabase Storage'] }
+              }
+            },
+            { code: '3.4.2', title: 'Firma Digital NOM-151 (ZapSign)', level: 4, tbd: true,
+              details: {
+                description: [
+                  '<strong>Firma Electrónica Avanzada:</strong> Envío a ZapSign cumpliendo NOM-151-SCFI-2016.',
+                  '<strong>Constancia NOM-151:</strong> Cada documento firmado regresa con constancia y timestamp.',
+                  '<strong>Multi-firmante:</strong> Acreditado, aval, testigos y representante legal en el mismo expediente.'
+                ],
+                rules: [
+                  'La firma debe completarse en máximo 48 horas tras su envío.',
+                  'Cada firmante verifica su identidad antes de firmar.',
+                  'El contrato firmado es inmutable y archivado por 10 años.'
+                ],
+                estimation: { effort: '7 días', priority: 'Crítica', team: '1 Backend', complexity: 'Alta',
+                  tags: ['ZapSign', 'NOM-151', 'API REST'] }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      code: '4.0', title: 'Administración de Cartera y Cobranza', level: 2,
+      children: [
+        {
+          code: '4.1', title: 'Kanban de Cartera', level: 3,
+          children: [
+            { code: '4.1.1', title: 'Estados: Inicio, Activo, Cancelado, Terminado', level: 4,
+              details: {
+                description: [
+                  '<strong>Vista Tipo Kanban:</strong> Tablero con 4 columnas mostrando todos los créditos de la financiera.',
+                  '<strong>Inicio:</strong> Crédito formalizado pendiente de dispersar.',
+                  '<strong>Activo:</strong> Crédito vigente recibiendo pagos.',
+                  '<strong>Cancelado:</strong> Rescindido antes de su vida útil.',
+                  '<strong>Terminado:</strong> Liquidado total por pago, quita o aplicación.'
+                ],
+                rules: [
+                  'El paso de Activo a Terminado requiere saldo total = 0.',
+                  'Cancelado requiere motivo documentado y autorización.',
+                  'Cada movimiento de columna registra usuario, fecha y motivo.'
+                ],
+                estimation: { effort: '6 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'React DnD', 'Supabase'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '4.2', title: 'Vista Detallada del Crédito', level: 3,
+          children: [
+            { code: '4.2.1', title: 'Amortizaciones (Tabla y Estado)', level: 4,
+              details: {
+                description: [
+                  '<strong>Tabla Completa:</strong> Muestra cada cuota con fecha, capital, interés, IVA, moratorio y saldo.',
+                  '<strong>Estado por Cuota:</strong> Pagada, pendiente, vencida, en proceso.',
+                  '<strong>Regeneración:</strong> Ante operaciones especiales (abonos, restructuras), la tabla se regenera con trazabilidad.'
+                ],
+                rules: [
+                  'Las tablas conservan un hash para detectar modificaciones indebidas.',
+                  'Las cuotas pagadas no pueden editarse; solo se reversan con autorización.',
+                  'Cambios en la tabla generan addendum al contrato.'
+                ],
+                estimation: { effort: '7 días', priority: 'Crítica', team: '1 Backend', complexity: 'Alta',
+                  tags: ['Next.js', 'Supabase', 'Decimal.js'] }
+              }
+            },
+            { code: '4.2.2', title: 'Pagos (Historial y Aplicación)', level: 4,
+              details: {
+                description: [
+                  '<strong>Historial de Pagos:</strong> Todos los pagos aplicados al crédito con fecha, monto, medio y referencia.',
+                  '<strong>Aplicación Manual:</strong> Captura individual con orden configurable (moratorios, intereses, IVA, capital).',
+                  '<strong>Reversas:</strong> Posibilidad de reversar con autorización dual (maker/checker).'
+                ],
+                rules: [
+                  'Toda aplicación genera asiento contable automático.',
+                  'Las reversas requieren motivo y quedan auditadas.',
+                  'Pagos duplicados se detectan por referencia y se bloquean.'
+                ],
+                estimation: { effort: '6 días', priority: 'Crítica', team: '1 Backend', complexity: 'Alta',
+                  tags: ['Next.js', 'Supabase', 'PostgreSQL'] }
+              }
+            },
+            { code: '4.2.3', title: 'Contabilidad del Crédito (Pólizas)', level: 4,
+              details: {
+                description: [
+                  '<strong>Pólizas Generadas:</strong> Cada movimiento (desembolso, devengamiento, pago, operación comercial) genera póliza.',
+                  '<strong>Vista Consolidada:</strong> Totales de capital dispuesto, intereses cobrados, IVA, moratorios.',
+                  '<strong>Exportable:</strong> CSV / Excel para conciliar con contabilidad general.'
+                ],
+                rules: [
+                  'Las pólizas deben cuadrar debe/haber al centavo.',
+                  'Cada póliza referencia el movimiento origen (pago, operación, amortización).',
+                  'Consultable solo por roles contables y admin.'
+                ],
+                estimation: { effort: '6 días', priority: 'Alta', team: '1 Backend', complexity: 'Alta',
+                  tags: ['Supabase', 'PostgreSQL', 'Accounting'] }
+              }
+            },
+            { code: '4.2.4', title: 'Documentos del Crédito', level: 4,
+              details: {
+                description: [
+                  '<strong>Bóveda Documental:</strong> Contrato firmado, pagaré, constancia NOM-151, INE, comprobantes, autorización Buró.',
+                  '<strong>Acceso Controlado:</strong> Sólo roles autorizados pueden descargar documentos originales.',
+                  '<strong>Inmutabilidad:</strong> Todos los documentos guardan hash para verificación.'
+                ],
+                rules: [
+                  'Los documentos están cifrados en reposo.',
+                  'Cada descarga queda en bitácora inmutable.',
+                  'Retención mínima de 10 años por normativa.'
+                ],
+                estimation: { effort: '4 días', priority: 'Alta', team: '1 Backend', complexity: 'Media',
+                  tags: ['Supabase Storage', 'ZapSign', 'NOM-151'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '4.3', title: 'Motor de Cálculos y Cobranza', level: 3,
+          children: [
+            { code: '4.3.1', title: 'Algoritmo de Amortización (Saldos Insolutos)', level: 4,
+              details: {
+                description: [
+                  '<strong>Sistema Francés:</strong> Pagos fijos con proporción variable de capital e interés.',
+                  '<strong>Cálculo Preciso:</strong> Intereses sobre saldos insolutos con precisión decimal.',
+                  '<strong>Tabla Dinámica:</strong> Regeneración automática ante abonos extraordinarios o reestructuras.'
+                ],
+                rules: [
+                  'Los cálculos deben cuadrar al centavo con contabilidad.',
+                  'El IVA se calcula solo sobre intereses ordinarios y moratorios.',
+                  'Las tablas conservan un hash para detectar modificaciones indebidas.'
+                ],
+                estimation: { effort: '8 días', priority: 'Crítica', team: '1 Backend Senior', complexity: 'Alta',
+                  tags: ['Next.js', 'Decimal.js', 'PostgreSQL'] }
+              }
+            },
+            { code: '4.3.2', title: 'Proceso de Actualización de Saldos Diarios', level: 4,
+              details: {
+                description: [
+                  '<strong>Proceso Batch de Madrugada:</strong> Devengamiento automatizado de intereses al cierre de cada día.',
+                  '<strong>Recálculo de Saldos:</strong> Actualización de intereses ordinarios y moratorios en todos los créditos activos.',
+                  '<strong>Reclasificación Automática:</strong> Créditos con atraso >90 días se marcan como Cartera Vencida según CNBV.'
+                ],
+                rules: [
+                  'El cierre diario debe completarse antes de las 6:00 AM del día siguiente.',
+                  'Si el batch falla, se genera alerta al equipo de operaciones y se reintenta automáticamente.',
+                  'Los días inhábiles no generan interés moratorio en productos así configurados.'
+                ],
+                estimation: { effort: '6 días', priority: 'Crítica', team: '1 Backend', complexity: 'Alta',
+                  tags: ['Supabase', 'pg_cron', 'Edge Functions'] }
+              }
+            },
+            { code: '4.3.3', title: 'Promesas de Pago y Escalamiento de Cobranza', level: 4,
+              details: {
+                description: [
+                  '<strong>Promesas de Pago:</strong> Registro de compromisos con fecha y monto comprometidos.',
+                  '<strong>Seguimiento Automatizado:</strong> Recordatorios WhatsApp/Email antes y después de la fecha (via n8n).',
+                  '<strong>Escalamiento:</strong> Paso automático entre etapas (temprana, media, jurídica).'
+                ],
+                rules: [
+                  'Una promesa incumplida escala automáticamente al siguiente nivel.',
+                  'La gestión debe quedar registrada con nota y medio de contacto.',
+                  'Clientes marcados como "No molestar" no reciben contactos automatizados.'
+                ],
+                estimation: { effort: '7 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['n8n', 'WhatsApp Business API', 'Email', 'Supabase'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '4.4', title: 'Operaciones Comerciales / Especiales', level: 3,
+          children: [
+            { code: '4.4.1', title: 'Condonación de Interés Moratorio', level: 4, tbd: true,
+              details: {
+                description: [
+                  '<strong>Quita de Moratorios:</strong> El autorizado condona parcial o totalmente los intereses moratorios acumulados.',
+                  '<strong>Propuesta Antes/Después:</strong> El sistema muestra el estado actual y cómo queda después de aplicar la condonación.',
+                  '<strong>Trazabilidad Total:</strong> Motivo, autorizante y monto quedan en bitácora inmutable.'
+                ],
+                rules: [
+                  'Requiere autorización de rol con permiso explícito.',
+                  'Se genera asiento contable y addendum al expediente.',
+                  'No afecta capital ni intereses ordinarios.'
+                ],
+                estimation: { effort: '4 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'Decimal.js'] }
+              }
+            },
+            { code: '4.4.2', title: 'Quitas (Capital y/o Intereses)', level: 4, tbd: true,
+              details: {
+                description: [
+                  '<strong>Quita Parcial:</strong> Se perdona un monto específico de capital o intereses.',
+                  '<strong>Propuesta Antes/Después:</strong> Vista comparativa antes y después de aplicar la quita.',
+                  '<strong>Impacto en Tabla:</strong> La tabla de amortización se regenera reflejando la quita.'
+                ],
+                rules: [
+                  'Autorización obligatoria con doble firma.',
+                  'La quita genera aviso fiscal si es > umbral definido.',
+                  'Queda documentada con contrato addendum firmado por el cliente.'
+                ],
+                estimation: { effort: '5 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Alta',
+                  tags: ['Next.js', 'Supabase', 'PDF'] }
+              }
+            },
+            { code: '4.4.3', title: 'Abono a Capital', level: 4,
+              details: {
+                description: [
+                  '<strong>Pago Extraordinario:</strong> El cliente hace un abono adicional destinado a capital.',
+                  '<strong>Opciones:</strong> Reducir plazo manteniendo pago o reducir pago manteniendo plazo.',
+                  '<strong>Recalculo Automático:</strong> La tabla se regenera con el nuevo saldo.'
+                ],
+                rules: [
+                  'El abono a capital no elimina moratorios pendientes.',
+                  'El cliente elige cómo se aplica (reducir plazo o pago).',
+                  'Queda asiento contable y notificación al cliente.'
+                ],
+                estimation: { effort: '4 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'Decimal.js'] }
+              }
+            },
+            { code: '4.4.4', title: 'Liquidación Anticipada', level: 4,
+              details: {
+                description: [
+                  '<strong>Cálculo de Finiquito:</strong> El sistema calcula el saldo total a liquidar con/sin penalización.',
+                  '<strong>Recibo de Liquidación:</strong> Documento PDF confirmando el cierre total del crédito.',
+                  '<strong>Cambio de Estado:</strong> El crédito pasa automáticamente a Terminado.'
+                ],
+                rules: [
+                  'Requiere confirmación del pago total aplicado.',
+                  'El crédito no puede reactivarse una vez liquidado.',
+                  'Se emite carta de liberación al cliente.'
+                ],
+                estimation: { effort: '5 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'PDF'] }
+              }
+            },
+            { code: '4.4.5', title: 'Restructura del Crédito', level: 4,
+              details: {
+                description: [
+                  '<strong>Nuevo Plan:</strong> Se genera una nueva tabla de amortización con nuevas condiciones (plazo, tasa, gracia).',
+                  '<strong>Propuesta Antes/Después:</strong> Comparativa del crédito original vs restructurado.',
+                  '<strong>Addendum Firmado:</strong> El cliente firma el addendum con la nueva tabla (NOM-151).'
+                ],
+                rules: [
+                  'Requiere autorización de Comité de Crédito.',
+                  'La restructura mantiene trazabilidad del crédito original.',
+                  'Genera asiento contable y notificación al cliente.'
+                ],
+                estimation: { effort: '7 días', priority: 'Alta', team: '1 Backend + 1 Frontend', complexity: 'Alta',
+                  tags: ['Next.js', 'Supabase', 'ZapSign'] }
+              }
+            },
+            { code: '4.4.6', title: 'Aplazamiento de Pagos', level: 4, tbd: true,
+              details: {
+                description: [
+                  '<strong>Diferimiento:</strong> El cliente solicita aplazar 1 o más cuotas para pagarlas en el futuro.',
+                  '<strong>Sin Modificar Capital:</strong> El capital no cambia; se recalcula el calendario.',
+                  '<strong>Tope Configurable:</strong> Máximo de aplazamientos por crédito/convenio.'
+                ],
+                rules: [
+                  'Solo disponible para clientes sin cartera vencida.',
+                  'Máximo N aplazamientos por crédito según política.',
+                  'Queda en historial del cliente para futuras solicitudes.'
+                ],
+                estimation: { effort: '4 días', priority: 'Media', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase'] }
+              }
+            },
+            { code: '4.4.7', title: 'Cobrar Cuotas (Aplicación Manual)', level: 4,
+              details: {
+                description: [
+                  '<strong>Aplicación Puntual:</strong> El operador aplica una cuota específica con monto, fecha y referencia.',
+                  '<strong>Orden de Aplicación:</strong> Moratorios, intereses, IVA, capital (configurable).',
+                  '<strong>Recibo:</strong> Genera recibo de pago en PDF para el cliente.'
+                ],
+                rules: [
+                  'Toda aplicación genera asiento contable.',
+                  'Aplicaciones fuera de lo usual requieren justificación.',
+                  'Notificación WhatsApp/Email al cliente tras aplicar.'
+                ],
+                estimation: { effort: '4 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'n8n'] }
+              }
+            },
+            { code: '4.4.8', title: 'Traslado a Cartera Vencida', level: 4,
+              details: {
+                description: [
+                  '<strong>Clasificación CNBV:</strong> Al superar los días de atraso definidos, el crédito se reclasifica a Cartera Vencida.',
+                  '<strong>Automatización:</strong> El proceso de saldos diarios reclasifica automáticamente al rebasar el umbral.',
+                  '<strong>Reporteo:</strong> Los créditos vencidos se reportan en los entregables regulatorios.'
+                ],
+                rules: [
+                  'La reclasificación es automática pero auditada.',
+                  'El regreso a vigente requiere regularización + autorización.',
+                  'Los moratorios continúan devengándose en cartera vencida.'
+                ],
+                estimation: { effort: '4 días', priority: 'Crítica', team: '1 Backend', complexity: 'Media',
+                  tags: ['Supabase', 'pg_cron', 'CNBV'] }
+              }
+            },
+            { code: '4.4.9', title: 'Operaciones Especiales de Arrendamiento', level: 4, tbd: true,
+              details: {
+                description: [
+                  '<strong>Específicas para Arrendamiento:</strong> Modificaciones de plazo, ajustes por residual, opciones de compra anticipada.',
+                  '<strong>Tratamiento Contable Diferenciado:</strong> Las operaciones se asientan según la naturaleza del arrendamiento.',
+                  '<strong>Addendum al Contrato:</strong> Cada operación se documenta con addendum firmado.'
+                ],
+                rules: [
+                  'Disponibles solo para créditos de tipo Arrendamiento.',
+                  'Requieren autorización del Comité.',
+                  'Aplica tratamiento fiscal específico (IVA, depreciación).'
+                ],
+                estimation: { effort: '5 días', priority: 'Media', team: '1 Full-Stack', complexity: 'Alta',
+                  tags: ['Next.js', 'Supabase', 'ZapSign'] }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      code: '5.0', title: 'Tesorería y Pagos', level: 2,
+      children: [
+        {
+          code: '5.1', title: 'Dispersión y Conciliación', level: 3,
+          children: [
+            { code: '5.1.1', title: 'Dispersión Automática vía API STP (SPEI)', level: 4,
+              details: {
+                description: [
+                  '<strong>Integración STP:</strong> Envío SPEI 24/7 directamente a cuentas del acreditado.',
+                  '<strong>Validación de CLABE:</strong> Consulta CLABE previa a la dispersión.',
+                  '<strong>Reintentos Inteligentes:</strong> Manejo de errores temporales sin duplicar pagos.'
+                ],
+                rules: [
+                  'El monto debe coincidir con el aprobado en la formalización.',
+                  'Toda dispersión queda con evidencia (CEP SPEI) almacenada.',
+                  'Los rechazos de CLABE requieren intervención manual de tesorería.'
+                ],
+                estimation: { effort: '8 días', priority: 'Crítica', team: '1 Backend', complexity: 'Alta',
+                  tags: ['STP API', 'SPEI', 'CEP', 'Supabase'] }
+              }
+            },
+            { code: '5.1.2', title: 'Aplicación de Pagos Masivos (Layouts)', level: 4,
+              details: {
+                description: [
+                  '<strong>Procesamiento Batch:</strong> Lectura de archivos CSV/Excel (nómina, bancos) con descuentos múltiples.',
+                  '<strong>Mapeo Automático:</strong> Cruce entre identificador (empleado, referencia) y crédito activo.',
+                  '<strong>Reportería:</strong> Reporte de aplicados, rechazos y partidas en investigación.'
+                ],
+                rules: [
+                  'Los pagos se aplican en el orden: moratorios → intereses ordinarios → IVA → capital.',
+                  'Las partidas no identificadas se registran en cuenta puente para revisión.',
+                  'Reversa de pagos solo con autorización doble (maker/checker).'
+                ],
+                estimation: { effort: '6 días', priority: 'Alta', team: '1 Backend', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'CSV Parser'] }
+              }
+            },
+            { code: '5.1.3', title: 'Conciliación Bancaria y Cuentas CLABE Individuales', level: 4,
+              details: {
+                description: [
+                  '<strong>CLABE por Crédito:</strong> Cada crédito puede tener su CLABE única STP para pagos directos.',
+                  '<strong>Conciliación Automática:</strong> Matching de depósitos con pagos esperados.',
+                  '<strong>Dashboard Tesorería:</strong> Vista en tiempo real de saldos, flujos y pendientes.'
+                ],
+                rules: [
+                  'Los depósitos sin identificar se notifican a tesorería en máximo 24 horas.',
+                  'Toda diferencia bancaria debe cuadrarse antes del cierre mensual.',
+                  'Las CLABEs individuales se emiten a través de STP.'
+                ],
+                estimation: { effort: '10 días', priority: 'Alta', team: '1 Backend + 1 Ops', complexity: 'Alta',
+                  tags: ['STP API', 'SPEI', 'Supabase', 'Reconciliation'] }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      code: '6.0', title: 'Contabilidad, Reportes y Compliance', level: 2,
+      children: [
+        {
+          code: '6.1', title: 'Reportes Operativos', level: 3,
+          children: [
+            { code: '6.1.1', title: 'Reportes de Cobranza, Amortizaciones y Desembolsos', level: 4,
+              details: {
+                description: [
+                  '<strong>Lista de Cobranza:</strong> Créditos con cuota pendiente en el periodo, agrupados por convenio o cobrador.',
+                  '<strong>Amortizaciones Esperadas:</strong> Proyección de ingresos por periodo.',
+                  '<strong>Desembolsos:</strong> Créditos dispersados con fecha, monto, medio y estatus.'
+                ],
+                rules: [
+                  'Cada reporte respeta el aislamiento multi-tenant (RLS).',
+                  'Exportables a Excel y PDF.',
+                  'Filtrables por fecha, convenio, producto, cobrador.'
+                ],
+                estimation: { effort: '6 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'SheetJS'] }
+              }
+            },
+            { code: '6.1.2', title: 'Estados de Cuenta con URL Pública', level: 4,
+              details: {
+                description: [
+                  '<strong>Estado de Cuenta Individual:</strong> Resumen del crédito con cuotas, saldo, próximo pago.',
+                  '<strong>URL Pública con Token:</strong> El cliente accede a su estado de cuenta sin login, vía URL firmada.',
+                  '<strong>Descarga PDF:</strong> Estado de cuenta descargable y enviable por WhatsApp/Email.'
+                ],
+                rules: [
+                  'La URL expira en un tiempo configurable (ej. 7 días).',
+                  'Todo acceso al estado de cuenta por URL pública queda auditado.',
+                  'El PDF lleva marca de agua con la fecha de generación.'
+                ],
+                estimation: { effort: '6 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'JWT', 'PDF'] }
+              }
+            },
+            { code: '6.1.3', title: 'Reportes de Cartera, Pagos, Saldos y Movimientos', level: 4,
+              details: {
+                description: [
+                  '<strong>Cartera:</strong> Composición vigente vs vencida, por convenio, producto, antigüedad.',
+                  '<strong>Pagos:</strong> Historial de pagos aplicados en el periodo.',
+                  '<strong>Saldos:</strong> Saldo insoluto, intereses, moratorios por crédito.',
+                  '<strong>Movimientos:</strong> Bitácora de todos los movimientos del periodo.'
+                ],
+                rules: [
+                  'Los reportes pesados se ejecutan en background y se notifican al terminar.',
+                  'Exportables a Excel, PDF, CSV.',
+                  'Cache de reportes frecuentes para evitar recarga de la BD transaccional.'
+                ],
+                estimation: { effort: '8 días', priority: 'Alta', team: '1 Backend + 1 Frontend', complexity: 'Alta',
+                  tags: ['Next.js', 'Supabase', 'SheetJS', 'Vercel Queue'] }
+              }
+            },
+            { code: '6.1.4', title: 'Bitácoras Operativas', level: 4,
+              details: {
+                description: [
+                  '<strong>Bitácora de Acciones:</strong> Registro de todas las operaciones (logins, cambios, operaciones comerciales).',
+                  '<strong>Filtros Granulares:</strong> Por usuario, módulo, fecha, tipo de evento.',
+                  '<strong>Exportable:</strong> CSV/JSON para entregables de auditoría.'
+                ],
+                rules: [
+                  'Las bitácoras son inmutables.',
+                  'Retención mínima 10 años.',
+                  'Solo roles Super Admin y Auditor pueden consultarlas.'
+                ],
+                estimation: { effort: '4 días', priority: 'Alta', team: '1 Backend', complexity: 'Media',
+                  tags: ['Supabase', 'PostgreSQL', 'Event Sourcing'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '6.2', title: 'Contabilidad y Regulatorio', level: 3,
+          children: [
+            { code: '6.2.1', title: 'Registro Contable y Pólizas', level: 4, tbd: true,
+              details: {
+                description: [
+                  '<strong>Generación Automática:</strong> Cada evento (desembolso, devengamiento, pago, operación) genera póliza contable.',
+                  '<strong>Catálogo de Cuentas:</strong> Configurable por financiera según su plan contable.',
+                  '<strong>Exportación:</strong> Layouts para sistemas contables externos (COI, Contpaq, etc.).'
+                ],
+                rules: [
+                  'Las pólizas deben cuadrar debe/haber al centavo.',
+                  'Reversas solo con autorización y justificación.',
+                  'Corte mensual obligatorio y bloqueo del periodo.'
+                ],
+                estimation: { effort: '8 días', priority: 'Alta', team: '1 Backend', complexity: 'Alta',
+                  tags: ['Supabase', 'PostgreSQL', 'Accounting'] }
+              }
+            },
+            { code: '6.2.2', title: 'Reportes Regulatorios CNBV (XML) y PLD', level: 4, tbd: true,
+              details: {
+                description: [
+                  '<strong>Matriz de Riesgo PLD:</strong> Evaluación automatizada de cada cliente (bajo, medio, alto).',
+                  '<strong>XML CNBV:</strong> Generación del reporte en formato XML para entrega mensual.',
+                  '<strong>Monitoreo Continuo:</strong> Alertas ante operaciones inusuales o relevantes.'
+                ],
+                rules: [
+                  'Los reportes se generan y entregan a más tardar el día 10 del mes siguiente.',
+                  'Todo cambio de nivel de riesgo queda registrado con justificación.',
+                  'Las operaciones inusuales se notifican al Oficial de Cumplimiento en menos de 24 horas.'
+                ],
+                estimation: { effort: '10 días', priority: 'Crítica', team: '1 Backend + 1 Compliance', complexity: 'Alta',
+                  tags: ['XML CNBV', 'PLD', 'Supabase'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '6.3', title: 'BI y Reporteo Genérico', level: 3,
+          children: [
+            { code: '6.3.1', title: 'Módulo Genérico de Reporteo y Dashboards', level: 4,
+              details: {
+                description: [
+                  '<strong>Constructor de Reportes:</strong> Los usuarios construyen sus propios reportes sin tocar código.',
+                  '<strong>Dashboards Pre-configurados:</strong> KPIs de originación, cartera, cobranza y tesorería.',
+                  '<strong>Exportación:</strong> Excel, PDF, CSV; API opcional para BI externo.'
+                ],
+                rules: [
+                  'Los reportes respetan el aislamiento multi-tenant (cada financiera ve solo lo suyo).',
+                  'Los reportes pesados se ejecutan en background y se notifican por email.',
+                  'Cache de reportes frecuentes para evitar recarga de la BD transaccional.'
+                ],
+                estimation: { effort: '10 días', priority: 'Alta', team: '1 Backend + 1 Frontend', complexity: 'Alta',
+                  tags: ['Next.js', 'Supabase', 'Recharts', 'SheetJS'] }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      code: '7.0', title: 'Notificaciones e Integraciones', level: 2,
+      children: [
+        {
+          code: '7.1', title: 'Notificaciones Automatizadas (n8n)', level: 3,
+          children: [
+            { code: '7.1.1', title: 'WhatsApp Business (Orquestación con n8n)', level: 4, tbd: true,
+              details: {
+                description: [
+                  '<strong>Workflows en n8n:</strong> Disparadores por eventos (solicitud creada, cuota vencida, pago aplicado, etc.).',
+                  '<strong>Plantillas Aprobadas:</strong> Uso de mensajes WhatsApp Business API.',
+                  '<strong>Segmentación por Tenant:</strong> Cada financiera tiene sus propias plantillas y número.'
+                ],
+                rules: [
+                  'Toda notificación queda registrada en bitácora.',
+                  'Los clientes pueden optar por no recibir mensajes (opt-out).',
+                  'Plantillas deben estar preaprobadas por Meta antes de usarse.'
+                ],
+                estimation: { effort: '6 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['n8n', 'WhatsApp Business API', 'Supabase'] }
+              }
+            },
+            { code: '7.1.2', title: 'Email Transaccional', level: 4, tbd: true,
+              details: {
+                description: [
+                  '<strong>Emails Críticos:</strong> Confirmaciones, recordatorios, estados de cuenta, recibos.',
+                  '<strong>Plantillas por Tenant:</strong> Branding propio por financiera.',
+                  '<strong>Tracking:</strong> Aperturas, clics, entregas, rebotes.'
+                ],
+                rules: [
+                  'Toda notificación queda registrada en bitácora.',
+                  'Los rebotes duros deactivan el email del cliente.',
+                  'Los clientes pueden optar por no recibir emails (opt-out).'
+                ],
+                estimation: { effort: '4 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['n8n', 'Email', 'Handlebars', 'Supabase'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '7.2', title: 'APIs e Integraciones Externas', level: 3,
+          children: [
+            { code: '7.2.1', title: 'APIs REST Públicas y Webhooks', level: 4,
+              details: {
+                description: [
+                  '<strong>API REST Documentada:</strong> Endpoints públicos para consulta de crédito, pago, estado de cuenta.',
+                  '<strong>Webhooks Salientes:</strong> Notifica eventos (nuevo pago, cambio de estado) a sistemas externos.',
+                  '<strong>Autenticación:</strong> API Keys por tenant, con scopes y rate limiting.'
+                ],
+                rules: [
+                  'Todo consumo de API queda auditado.',
+                  'Rate limits configurables por tenant.',
+                  'Documentación pública tipo OpenAPI / Swagger.'
+                ],
+                estimation: { effort: '7 días', priority: 'Media', team: '1 Backend', complexity: 'Media',
+                  tags: ['Next.js API Routes', 'Supabase', 'OpenAPI'] }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      code: '8.0', title: 'Migración de Datos (Odoo)', level: 2, separateProject: true,
+      children: [
+        {
+          code: '8.1', title: 'Transición desde Odoo', level: 3, separateProject: true,
+          children: [
+            { code: '8.1.1', title: 'Mapeo, Limpieza y Auditoría Espejo de Cartera', level: 4, separateProject: true,
+              details: {
+                description: [
+                  '<strong>Mapeo de Esquemas:</strong> Traducción del modelo Odoo al modelo SOFOM con reglas documentadas.',
+                  '<strong>Limpieza de Datos:</strong> Normalización, deduplicación y reconciliación de inconsistencias.',
+                  '<strong>Migración Espejo:</strong> SOFOM y Odoo operan en paralelo hasta validar que los saldos cuadran 100%.'
+                ],
+                rules: [
+                  'La migración solo avanza tras el visto bueno de contabilidad y auditoría.',
+                  'Cada registro migrado tiene su ID origen (Odoo) para trazabilidad.',
+                  'Los 250 MDP en ~4,000 créditos se migran en oleadas controladas.',
+                  'Plan de rollback documentado y probado antes del switch.'
+                ],
+                estimation: { effort: '15 días', priority: 'Crítica', team: '1 Data + 1 Backend + 1 QA', complexity: 'Alta',
+                  tags: ['Odoo', 'Supabase', 'PostgreSQL', 'ETL'] }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      code: '9.0', title: 'QA, Documentación y Lanzamiento', level: 2,
+      children: [
+        {
+          code: '9.1', title: 'Calidad y Pruebas', level: 3,
+          children: [
+            { code: '9.1.1', title: 'Pruebas Automatizadas (Unit + E2E)', level: 4, tbd: true,
+              details: {
+                description: [
+                  '<strong>Unitarias:</strong> Cobertura de lógica financiera, cálculos y reglas de negocio.',
+                  '<strong>Integración / E2E:</strong> Flujos completos: originación, pago, dispersión.',
+                  '<strong>Pipeline CI:</strong> Pruebas ejecutadas en cada PR antes de mergear.'
+                ],
+                rules: [
+                  'Cobertura mínima 80% en lógica crítica (cálculos, workflow).',
+                  'Los E2E cubren los 3 flujos principales del sistema.',
+                  'Un PR no puede mergear si falla cualquier prueba.'
+                ],
+                estimation: { effort: '12 días', priority: 'Alta', team: '1 QA + 1 Backend', complexity: 'Media',
+                  tags: ['Playwright', 'Vitest', 'GitHub Actions', 'Next.js'] }
+              }
+            },
+            { code: '9.1.2', title: 'Pruebas de Estrés y Rendimiento', level: 4,
+              details: {
+                description: [
+                  '<strong>Load Testing:</strong> Simulación de múltiples usuarios concurrentes.',
+                  '<strong>Stress Test del Batch:</strong> Validar devengamiento diario con cartera a escala.',
+                  '<strong>Optimización:</strong> Identificar cuellos de botella (queries, índices, caché).'
+                ],
+                rules: [
+                  'El devengamiento diario debe completarse en menos de 2 horas para 50k créditos.',
+                  'La API debe sostener 100 req/seg sin degradación.',
+                  'Los reportes no deben tardar >30s para periodos estándar.'
+                ],
+                estimation: { effort: '6 días', priority: 'Alta', team: '1 QA + 1 DevOps', complexity: 'Alta',
+                  tags: ['k6', 'Vercel', 'Supabase', 'PostgreSQL'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '9.2', title: 'Documentación', level: 3,
+          children: [
+            { code: '9.2.1', title: 'Manuales de Usuario por Rol', level: 4,
+              details: {
+                description: [
+                  '<strong>Manuales Específicos:</strong> Uno por rol (analista, mesa de control, tesorería, admin, super admin).',
+                  '<strong>Videos Cortos:</strong> Tutoriales por proceso crítico.',
+                  '<strong>FAQ:</strong> Preguntas frecuentes y solución de problemas comunes.'
+                ],
+                rules: [
+                  'Cada módulo debe tener manual con capturas.',
+                  'Los manuales se mantienen versionados junto al sistema.',
+                  'Disponibles en línea desde la misma aplicación (Help Center).'
+                ],
+                estimation: { effort: '8 días', priority: 'Media', team: '1 Tech Writer', complexity: 'Baja',
+                  tags: ['Notion', 'Loom', 'Markdown'] }
+              }
+            },
+            { code: '9.2.2', title: 'Documentación Técnica y de API', level: 4,
+              details: {
+                description: [
+                  '<strong>Arquitectura:</strong> Diagramas del sistema, BD, integraciones.',
+                  '<strong>API Reference:</strong> OpenAPI / Swagger publicado.',
+                  '<strong>Runbooks:</strong> Procedimientos para incidentes, restore, rollback.'
+                ],
+                rules: [
+                  'La documentación vive junto al código (docs-as-code).',
+                  'Se actualiza en cada release relevante.',
+                  'Los runbooks son validados con simulacros.'
+                ],
+                estimation: { effort: '6 días', priority: 'Media', team: '1 Backend Lead', complexity: 'Media',
+                  tags: ['Markdown', 'OpenAPI', 'Mermaid', 'GitHub'] }
+              }
+            }
+          ]
+        },
+        {
+          code: '9.3', title: 'Lanzamiento y Soporte', level: 3,
+          children: [
+            { code: '9.3.1', title: 'Go-Live y Corte a Producción', level: 4,
+              details: {
+                description: [
+                  '<strong>Plan de Cutover:</strong> Secuencia detallada para el switch Odoo → SOFOM.',
+                  '<strong>Ventana Controlada:</strong> Go-live en fin de semana con equipo de guardia.',
+                  '<strong>Verificación Post-Go-Live:</strong> Smoke tests y validación de los primeros movimientos.'
+                ],
+                rules: [
+                  'Plan de rollback probado antes del Go-Live.',
+                  'Comunicación a usuarios con 7 días de anticipación.',
+                  'Guardia extendida durante los primeros 7 días.'
+                ],
+                estimation: { effort: '5 días', priority: 'Crítica', team: '1 PM + 1 DevOps + 1 QA', complexity: 'Alta',
+                  tags: ['Vercel', 'Supabase', 'Runbook'] }
+              }
+            },
+            { code: '9.3.2', title: 'Soporte Post-Lanzamiento (3 meses)', level: 4,
+              details: {
+                description: [
+                  '<strong>Ventana de Hypercare:</strong> 3 meses posteriores al Go-Live con equipo dedicado.',
+                  '<strong>SLA Definido:</strong> Tiempos de respuesta por severidad (P0, P1, P2, P3).',
+                  '<strong>Mejora Continua:</strong> Priorización de bugs y ajustes con el cliente.'
+                ],
+                rules: [
+                  'Reportes semanales de incidencias al cliente.',
+                  'Los bugs críticos (P0) se atienden en <2 horas.',
+                  'Al término de los 3 meses, se entrega transferencia formal a soporte regular.'
+                ],
+                estimation: { effort: '3 meses', priority: 'Alta', team: '2 Ingenieros + 1 PM', complexity: 'Media',
+                  tags: ['Vercel', 'Supabase', 'Sentry', 'Linear'] }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+function renderNode(node) {
+  const li = document.createElement('li');
+  li.className = 'level-' + node.level;
+  li.dataset.level = node.level;
+  li.dataset.code = node.code;
+  li.dataset.title = node.title.toLowerCase();
+  if (node.tbd) li.classList.add('tbd');
+  if (node.outOfScope) li.classList.add('out-of-scope');
+  if (node.separateProject) li.classList.add('separate-project');
+
+  const box = document.createElement('div');
+  box.className = 'node-box';
+
+  const code = document.createElement('div');
+  code.className = 'node-code';
+  code.textContent = node.code;
+  box.appendChild(code);
+
+  const title = document.createElement('div');
+  title.className = 'node-title';
+  title.textContent = node.title;
+  box.appendChild(title);
+
+  if (node.separateProject) {
+    const badge = document.createElement('div');
+    badge.className = 'separate-project-badge';
+    badge.textContent = 'N/A · Proyecto aparte';
+    box.appendChild(badge);
+    const note = document.createElement('div');
+    note.className = 'separate-project-note';
+    note.textContent = 'Será un proyecto independiente';
+    box.appendChild(note);
+  } else if (node.outOfScope) {
+    const badge = document.createElement('div');
+    badge.className = 'out-of-scope-badge';
+    badge.textContent = 'Fuera de Alcance';
+    box.appendChild(badge);
+  } else if (node.tbd) {
+    const badge = document.createElement('div');
+    badge.className = 'tbd-badge';
+    badge.textContent = 'TBD · Posible fuera de alcance';
+    box.appendChild(badge);
+  }
+
+  const hasChildren = node.children && node.children.length > 0;
+
+  if (hasChildren) {
+    const toggle = document.createElement('div');
+    toggle.className = 'toggle-icon';
+    toggle.textContent = '−';
+    toggle.onclick = (e) => {
+      e.stopPropagation();
+      toggleNode(li, toggle);
+    };
+    box.appendChild(toggle);
+
+    box.onclick = () => {
+      setSelectedBox(box);
+      toggleNode(li, toggle);
+    };
+  } else if (node.details) {
+    // Leaf node with details → open modal
+    box.onclick = () => {
+      setSelectedBox(box);
+      openModal(node);
+    };
+    box.title = 'Clic para ver detalle';
+  } else {
+    box.onclick = () => setSelectedBox(box);
+  }
+
+  li.appendChild(box);
+
+  if (hasChildren) {
+    const ul = document.createElement('ul');
+    for (const child of node.children) {
+      ul.appendChild(renderNode(child));
+    }
+    li.appendChild(ul);
+  }
+
+  return li;
+}
+
+function toggleNode(li, toggle) {
+  li.classList.toggle('collapsed');
+  toggle.textContent = li.classList.contains('collapsed') ? '+' : '−';
+}
+
+function setSelectedBox(box) {
+  // Limpiar selección anterior y cadena de ancestros
+  document.querySelectorAll('.node-box.selected, .node-box.ancestor').forEach(b => {
+    b.classList.remove('selected');
+    b.classList.remove('ancestor');
+  });
+  document.querySelectorAll('li.ancestor-line, li.selected-line').forEach(li => {
+    li.classList.remove('ancestor-line');
+    li.classList.remove('selected-line');
+  });
+
+  box.classList.add('selected');
+  const li = box.closest('li');
+  if (li) li.classList.add('selected-line');
+
+  // Subir por los ancestros hasta nivel 2
+  let parentLi = li ? li.parentElement.closest('li') : null;
+  while (parentLi) {
+    const lvl = parseInt(parentLi.dataset.level || '0', 10);
+    if (lvl >= 2) {
+      const parentBox = parentLi.querySelector(':scope > .node-box');
+      if (parentBox) parentBox.classList.add('ancestor');
+      parentLi.classList.add('ancestor-line');
+    }
+    if (lvl <= 2) break;
+    parentLi = parentLi.parentElement.closest('li');
+  }
+}
+
+// Build path from code: "2.2.3" → ["2.0", "2.2", "2.2.3"]
+function findPath(root, targetCode, path = []) {
+  if (root.code === targetCode) return [...path, root];
+  if (!root.children) return null;
+  for (const c of root.children) {
+    const found = findPath(c, targetCode, [...path, root]);
+    if (found) return found;
+  }
+  return null;
+}
+
+// Modal functions
+function openModal(node) {
+  const overlay = document.getElementById('modal-overlay');
+  const modal = overlay.querySelector('.modal');
+  if (modal) {
+    modal.classList.toggle('tbd', !!node.tbd);
+    modal.classList.toggle('out-of-scope', !!node.outOfScope);
+    modal.classList.toggle('separate-project', !!node.separateProject);
+  }
+  let statusSuffix = '';
+  if (node.separateProject) statusSuffix = '  ·  N/A · PROYECTO APARTE';
+  else if (node.outOfScope) statusSuffix = '  ·  FUERA DE ALCANCE';
+  else if (node.tbd) statusSuffix = '  ·  TBD (posible fuera de alcance)';
+  document.getElementById('modal-code').textContent = node.code + ' · Nivel ' + node.level + statusSuffix;
+
+  // Banner de aviso en el modal
+  const banner = document.getElementById('modal-banner');
+  banner.className = 'modal-banner';
+  if (node.separateProject) {
+    banner.classList.add('separate-project-banner');
+    banner.innerHTML = '🔵 <strong>N/A · Proyecto aparte:</strong> Este alcance se manejará como un proyecto independiente, fuera del alcance del sistema actual.';
+    banner.style.display = '';
+  } else if (node.outOfScope) {
+    banner.classList.add('out-of-scope-banner');
+    banner.innerHTML = '⚫ <strong>Fuera de Alcance:</strong> Esta funcionalidad no se incluye en la entrega inicial.';
+    banner.style.display = '';
+  } else if (node.tbd) {
+    banner.classList.add('tbd-banner');
+    banner.innerHTML = '🔴 <strong>TBD · Por definir:</strong> Este alcance está pendiente de validación y puede quedar fuera de la entrega inicial.';
+    banner.style.display = '';
+  } else {
+    banner.style.display = 'none';
+  }
+  document.getElementById('modal-title').textContent = node.title;
+
+  // Build breadcrumb
+  const path = findPath(data, node.code);
+  if (path && path.length > 1) {
+    const crumb = path.slice(0, -1).map(n => n.title).join(' → ');
+    document.getElementById('modal-path').textContent = crumb;
+  } else {
+    document.getElementById('modal-path').textContent = '';
+  }
+
+  const details = node.details || {};
+
+  // Description
+  const descList = document.getElementById('desc-list');
+  descList.innerHTML = '';
+  if (details.description && details.description.length) {
+    details.description.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = item;
+      descList.appendChild(li);
+    });
+  } else {
+    descList.innerHTML = '<div class="empty-state">Sin descripción disponible.</div>';
+  }
+
+  // Rules
+  const rulesList = document.getElementById('rules-list');
+  rulesList.innerHTML = '';
+  if (details.rules && details.rules.length) {
+    details.rules.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = item;
+      rulesList.appendChild(li);
+    });
+  } else {
+    rulesList.innerHTML = '<div class="empty-state">Sin reglas definidas.</div>';
+  }
+
+  // Stack tecnológico (al final de la pestaña Descripción)
+  const tagsBox = document.getElementById('desc-tags');
+  const stackTitle = document.getElementById('stack-title');
+  tagsBox.innerHTML = '';
+  const tags = details.estimation && details.estimation.tags;
+  if (tags && tags.length) {
+    stackTitle.style.display = '';
+    tagsBox.style.display = '';
+    tags.forEach(t => {
+      const tag = document.createElement('span');
+      tag.className = 'tag';
+      tag.textContent = t;
+      tagsBox.appendChild(tag);
+    });
+  } else {
+    stackTitle.style.display = 'none';
+    tagsBox.style.display = 'none';
+  }
+
+  // Reset to first tab
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('.modal-tab[data-tab="description"]').classList.add('active');
+  document.getElementById('tab-description').classList.add('active');
+
+  overlay.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+// Tab switching
+document.querySelectorAll('.modal-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.dataset.tab;
+    document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + target).classList.add('active');
+  });
+});
+
+// Close on overlay click / ESC
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'modal-overlay') closeModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// Build the tree
+const diagram = document.getElementById('diagram');
+const treeRoot = document.createElement('div');
+treeRoot.className = 'tree';
+const rootUl = document.createElement('ul');
+rootUl.appendChild(renderNode(data));
+treeRoot.appendChild(rootUl);
+diagram.appendChild(treeRoot);
+
+// Controls
+function expandAll() {
+  document.querySelectorAll('li.collapsed').forEach(li => {
+    li.classList.remove('collapsed');
+    const t = li.querySelector(':scope > .node-box > .toggle-icon');
+    if (t) t.textContent = '−';
+  });
+}
+
+function collapseAll() {
+  document.querySelectorAll('#diagram li').forEach(li => {
+    if (li.querySelector(':scope > ul')) {
+      if (parseInt(li.dataset.level) > 1) {
+        li.classList.add('collapsed');
+        const t = li.querySelector(':scope > .node-box > .toggle-icon');
+        if (t) t.textContent = '+';
+      }
+    }
+  });
+}
+
+function expandToLevel(maxLevel) {
+  document.querySelectorAll('#diagram li').forEach(li => {
+    const lvl = parseInt(li.dataset.level);
+    const hasKids = !!li.querySelector(':scope > ul');
+    if (!hasKids) return;
+    if (lvl >= maxLevel) {
+      li.classList.add('collapsed');
+      const t = li.querySelector(':scope > .node-box > .toggle-icon');
+      if (t) t.textContent = '+';
+    } else {
+      li.classList.remove('collapsed');
+      const t = li.querySelector(':scope > .node-box > .toggle-icon');
+      if (t) t.textContent = '−';
+    }
+  });
+}
+
+// Zoom
+let currentZoom = 1;
+function zoom(delta) {
+  currentZoom = Math.max(0.3, Math.min(2, currentZoom + delta));
+  applyZoom();
+}
+function resetZoom() {
+  currentZoom = 1;
+  applyZoom();
+}
+function applyZoom() {
+  diagram.style.transform = `scale(${currentZoom})`;
+  document.getElementById('zoom-label').textContent = Math.round(currentZoom * 100) + '%';
+}
+
+// Search
+const searchInput = document.getElementById('search');
+searchInput.addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  const all = document.querySelectorAll('#diagram li');
+
+  all.forEach(li => {
+    li.classList.remove('search-hidden');
+    const box = li.querySelector(':scope > .node-box');
+    if (box) box.classList.remove('match-highlight');
+  });
+
+  if (!q) return;
+
+  const matches = [];
+  all.forEach(li => {
+    const title = li.dataset.title || '';
+    const code = (li.dataset.code || '').toLowerCase();
+    if (title.includes(q) || code.includes(q)) {
+      matches.push(li);
+      const box = li.querySelector(':scope > .node-box');
+      if (box) box.classList.add('match-highlight');
+    }
+  });
+
+  const keepVisible = new Set(matches);
+  matches.forEach(li => {
+    let parent = li.parentElement?.closest('li');
+    while (parent) {
+      keepVisible.add(parent);
+      parent.classList.remove('collapsed');
+      const t = parent.querySelector(':scope > .node-box > .toggle-icon');
+      if (t) t.textContent = '−';
+      parent = parent.parentElement?.closest('li');
+    }
+  });
+
+  all.forEach(li => {
+    if (!keepVisible.has(li)) {
+      const descendants = li.querySelectorAll('li');
+      let hasMatchInDescendants = false;
+      descendants.forEach(d => { if (keepVisible.has(d)) hasMatchInDescendants = true; });
+      if (!hasMatchInDescendants) {
+        li.classList.add('search-hidden');
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>
