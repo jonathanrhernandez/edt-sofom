@@ -1044,7 +1044,7 @@ const data = {
                 description: [
                   '<strong>Deploy en Vercel:</strong> Entornos separados (dev, staging, producción) con previews por branch.',
                   '<strong>CI/CD:</strong> Pipeline automatizado con pruebas, lint y type-check antes de cada deploy.',
-                  '<strong>Secrets y Variables:</strong> Gestión segura de claves (Supabase, STP, ZapSign, FaceMatch, Buró) por entorno.'
+                  '<strong>Secrets y Variables:</strong> Gestión segura de claves (Supabase, STP, ZapSign, Buró) por entorno.'
                 ],
                 rules: [
                   'Ningún secreto se commitea al repositorio.',
@@ -1266,7 +1266,7 @@ const data = {
             { code: '3.1.2', title: 'Transiciones, Validaciones y Notificaciones', level: 4,
               details: {
                 description: [
-                  '<strong>Validaciones Pre-transición:</strong> Para avanzar a "Enviar a Firma" deben estar OK Buró, Listas Negras, Biométrico, expediente completo.',
+                  '<strong>Validaciones Pre-transición:</strong> Para avanzar a "Enviar a Firma" deben estar OK Buró, Listas Negras, expediente completo.',
                   '<strong>Reglas por Convenio:</strong> Cada producto define qué validaciones son obligatorias.',
                   '<strong>Notificaciones:</strong> WhatsApp/Email al solicitante y al responsable del siguiente paso (via n8n).'
                 ],
@@ -1321,11 +1321,11 @@ const data = {
                 description: [
                   '<strong>Referencias Personales:</strong> Captura de contactos que conocen al solicitante (nombre, parentesco, teléfono).',
                   '<strong>Dependientes Económicos:</strong> Listado de personas que dependen del solicitante.',
-                  '<strong>Aval:</strong> Captura completa del aval con sus propios documentos y biométrico.',
+                  '<strong>Aval:</strong> Captura completa del aval con sus propios documentos.',
                   '<strong>Testigos:</strong> Datos de testigos requeridos para firma del contrato.'
                 ],
                 rules: [
-                  'El aval pasa por el mismo flujo de validación (Buró, Listas Negras, Biométrico) que el acreditado.',
+                  'El aval pasa por el mismo flujo de validación (Buró, Listas Negras) que el acreditado.',
                   'Mínimo 2 referencias personales no familiares por solicitud.',
                   'Los testigos deben tener identificación oficial vigente registrada.'
                 ],
@@ -1396,8 +1396,7 @@ const data = {
                 ],
                 rules: [
                   'Confianza mínima del OCR del 85% para auto-aceptar; por debajo va a revisión manual.',
-                  'Los documentos se almacenan cifrados en Supabase Storage con política RLS por tenant.',
-                  'El INE debe coincidir con el biométrico (rostro).'
+                  'Los documentos se almacenan cifrados en Supabase Storage con política RLS por tenant.'
                 ],
                 estimation: { effort: '10 días', priority: 'Alta', team: '1 Backend + 1 ML', complexity: 'Alta',
                   tags: ['IA Visión', 'Supabase Storage', 'Next.js'] }
@@ -1433,22 +1432,6 @@ const data = {
                 ],
                 estimation: { effort: '6 días', priority: 'Crítica', team: '1 Backend', complexity: 'Alta',
                   tags: ['OFAC', 'SAT', 'PLD', 'PEP', 'n8n'] }
-              }
-            },
-            { code: '3.3.4', title: 'Validación Biométrica (FaceMatch + Prueba de Vida)', level: 4, outOfScope: true,
-              details: {
-                description: [
-                  '<strong>Prueba de Vida:</strong> Video selfie con instrucciones aleatorias (gestos).',
-                  '<strong>FaceMatch:</strong> Comparación facial entre selfie y fotografía del INE.',
-                  '<strong>Validación INE:</strong> Consulta al padrón del INE para autenticidad.'
-                ],
-                rules: [
-                  'Score de match facial mínimo del 90% para avanzar.',
-                  'La prueba de vida es obligatoria para acreditado y aval antes de firmar.',
-                  'Los intentos fallidos consecutivos (>3) bloquean la solicitud para revisión manual.'
-                ],
-                estimation: { effort: '8 días', priority: 'Crítica', team: '1 Backend', complexity: 'Alta',
-                  tags: ['FaceMatch', 'Biometría', 'Next.js'] }
               }
             }
           ]
