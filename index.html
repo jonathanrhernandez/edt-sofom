@@ -366,6 +366,67 @@
     text-transform: uppercase;
   }
 
+  .hito-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+  .hito-badge.h1 { background: #dbeafe; color: #1e40af; }
+  .hito-badge.h2 { background: #dcfce7; color: #166534; }
+  .hito-badge.h3 { background: #fef9c3; color: #854d0e; }
+  .hito-badge.h4 { background: #ede9fe; color: #5b21b6; }
+  .hito-badge.h5 { background: #fee2e2; color: #991b1b; }
+
+  .garantia-badge {
+    display: inline-block;
+    background: #d1fae5;
+    color: #065f46;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+  .level-4.garantia .node-box {
+    border-color: #6ee7b7;
+    background: #f0fdf4;
+  }
+
+  .external-provider-badge {
+    display: inline-block;
+    background: #0ea5e9;
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+  .level-4.external-provider .node-box {
+    border-color: #7dd3fc;
+    background: #f0f9ff;
+  }
+
+  .modal-banner.garantia-banner-modal {
+    background: #ecfdf5;
+    border-color: #6ee7b7;
+    color: #065f46;
+  }
+  .modal-banner.external-provider-banner {
+    background: #f0f9ff;
+    border-color: #7dd3fc;
+    color: #0c4a6e;
+  }
+
   /* Fuera de alcance - estado más definitivo que TBD */
   .level-4.out-of-scope .node-box {
     background: #f3f4f6;
@@ -856,7 +917,7 @@
 <body>
   <header>
     <h1>Estructura de Desglose de Trabajo (EDT/WBS)</h1>
-    <div class="subtitle">Sistema Integral de Gestión de Crédito — SOFOM</div>
+    <div class="subtitle">Sistema Integral de Gestión de Crédito — SOFOM · Cliente: Quattro internacional · Contrato + Anexo A (27 Mayo 2026)</div>
   </header>
 
   <div class="toolbar">
@@ -893,6 +954,18 @@
       <div class="legend-swatch" style="background:#f8fafc; border-color:#475569;"></div>
       <span>Nivel 4 — Tareas (clic para ver detalle)</span>
     </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:#f0f9ff; border-color:#0ea5e9;"></div>
+      <span>Incluido · Proveedor externo (sandbox Cliente)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:#fef3c7; border-color:#d97706;"></div>
+      <span>TBD · Pendiente confirmación Cliente / proveedor API</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:#f0fdf4; border-color:#6ee7b7;"></div>
+      <span>Garantía 4 meses (post Go-Live, no es hito)</span>
+    </div>
     <div class="legend-item" style="margin-left:auto; color:var(--color-text-light);">
       💡 Clic en nodos con hijos para expandir/contraer · Clic en tareas para ver detalle
     </div>
@@ -903,7 +976,7 @@
   </div>
 
   <footer>
-    EDT/WBS interactivo • Sistema SOFOM • Usa los controles de zoom y desplázate para navegar el diagrama
+    EDT/WBS interactivo • Alineado al Contrato + Anexo A firmado (27 Mayo 2026) • Garantía 4 meses · OCR, ZapSign, WhatsApp y Email INCLUIDOS (condición sandbox Cliente)
   </footer>
 
   <!-- MODAL -->
@@ -949,7 +1022,7 @@ const data = {
         {
           code: '1.1', title: 'Definición de Experiencia de Usuario', level: 3,
           children: [
-            { code: '1.1.1', title: 'User Flows y Mapas de Navegación', level: 4,
+            { code: '1.1.1', hito: 1, title: 'User Flows y Mapas de Navegación', level: 4,
               details: {
                 description: [
                   '<strong>Mapeo End-to-End:</strong> Diagramar flujos por rol (solicitante, analista, mesa de control, tesorería, admin, super admin).',
@@ -965,7 +1038,7 @@ const data = {
                   tags: ['Figma', 'Miro', 'User Research'] }
               }
             },
-            { code: '1.1.2', title: 'Wireframes de Baja Fidelidad (Estructura)', level: 4,
+            { code: '1.1.2', hito: 1, title: 'Wireframes de Baja Fidelidad (Estructura)', level: 4,
               details: {
                 description: [
                   '<strong>Esqueletos Funcionales:</strong> Estructura de cada pantalla sin color ni branding, enfocados en jerarquía de información.',
@@ -986,7 +1059,7 @@ const data = {
         {
           code: '1.2', title: 'Diseño de Interfaz de Usuario', level: 3,
           children: [
-            { code: '1.2.1', title: 'Design System Base (Atómico)', level: 4,
+            { code: '1.2.1', hito: 1, title: 'Design System Base (Atómico)', level: 4,
               details: {
                 description: [
                   '<strong>Metodología Atómica:</strong> Átomos (colores, tipografía, espaciado), moléculas (inputs, botones), organismos (tarjetas, tablas).',
@@ -1002,7 +1075,7 @@ const data = {
                   tags: ['Figma', 'Storybook', 'Tailwind', 'Next.js'] }
               }
             },
-            { code: '1.2.2', title: 'Prototipos de Alta Fidelidad e Interacciones', level: 4,
+            { code: '1.2.2', hito: 1, title: 'Prototipos de Alta Fidelidad e Interacciones', level: 4,
               details: {
                 description: [
                   '<strong>Prototipo Navegable:</strong> Flujos completos clickeables con transiciones y micro-interacciones.',
@@ -1023,7 +1096,7 @@ const data = {
         {
           code: '1.3', title: 'Arquitectura y Setup Inicial', level: 3,
           children: [
-            { code: '1.3.1', title: 'Modelado de Base de Datos (Supabase / PostgreSQL)', level: 4,
+            { code: '1.3.1', hito: 1, title: 'Modelado de Base de Datos (Supabase / PostgreSQL)', level: 4,
               details: {
                 description: [
                   '<strong>Esquema Multi-tenant:</strong> Todas las tablas transaccionales con columna tenant_id indexada.',
@@ -1039,20 +1112,21 @@ const data = {
                   tags: ['Supabase', 'PostgreSQL', 'SQL', 'Data Modeling'] }
               }
             },
-            { code: '1.3.2', title: 'Configuración de Infraestructura (Vercel + CI/CD)', level: 4,
+            { code: '1.3.2', hito: 1, title: 'Configuración de Infraestructura (Vercel + Supabase)', level: 4,
               details: {
                 description: [
                   '<strong>Deploy en Vercel:</strong> Entornos separados (dev, staging, producción) con previews por branch.',
-                  '<strong>CI/CD:</strong> Pipeline automatizado con pruebas, lint y type-check antes de cada deploy.',
-                  '<strong>Secrets y Variables:</strong> Gestión segura de claves (Supabase, STP, ZapSign, Buró) por entorno.'
+                  '<strong>Deploy manual (sin CI/CD — D-004):</strong> Despliegues manuales desde el Proveedor; no hay pipeline automatizado en alcance.',
+                  '<strong>Secrets y Variables:</strong> Gestión segura de claves (Supabase, STP, ZapSign, Círculo de Crédito) por entorno.',
+                  '<strong>Cuentas del Proveedor:</strong> Vercel y Supabase tier Free durante desarrollo (Anexo A §8.9).'
                 ],
                 rules: [
                   'Ningún secreto se commitea al repositorio.',
-                  'Cada PR a main requiere revisión + pipeline verde.',
-                  'Backups diarios automáticos de la BD Supabase.'
+                  'Las ramas protegidas usan PR a develop/main; no push directo (ver flujo Git del proyecto).',
+                  'Backups diarios automáticos de la BD Supabase (PITR 7 días).'
                 ],
                 estimation: { effort: '4 días', priority: 'Alta', team: '1 DevOps', complexity: 'Media',
-                  tags: ['Vercel', 'GitHub Actions', 'Supabase', 'Next.js'] }
+                  tags: ['Vercel', 'Supabase', 'Next.js', 'GitHub'] }
               }
             }
           ]
@@ -1065,7 +1139,7 @@ const data = {
         {
           code: '2.1', title: 'Configuración de Marca Blanca', level: 3,
           children: [
-            { code: '2.1.1', title: 'Gestión de Identidad Visual (Logos, Favicons, Paletas de Colores)', level: 4,
+            { code: '2.1.1', hito: 1, title: 'Gestión de Identidad Visual (Logos, Favicons, Paletas de Colores)', level: 4,
               details: {
                 description: [
                   '<strong>Panel de Branding:</strong> Cada financiera puede cargar su logo, favicon y definir su paleta de colores primaria/secundaria.',
@@ -1081,7 +1155,7 @@ const data = {
                   tags: ['Supabase Storage', 'Next.js', 'Tailwind'] }
               }
             },
-            { code: '2.1.2', title: 'Configuración de Dominios y Subdominios por Financiera', level: 4,
+            { code: '2.1.2', hito: 1, title: 'Configuración de Dominios y Subdominios por Financiera', level: 4,
               details: {
                 description: [
                   '<strong>Subdominios Dinámicos:</strong> Cada financiera tiene su propio subdominio (financieraA.sofom.com) gestionado vía Vercel.',
@@ -1097,7 +1171,7 @@ const data = {
                   tags: ['Vercel', 'Next.js Middleware', 'DNS'] }
               }
             },
-            { code: '2.1.3', title: 'Personalización de Notificaciones (Templates Email/WhatsApp)', level: 4,
+            { code: '2.1.3', hito: 1, title: 'Personalización de Notificaciones (Templates Email/WhatsApp)', level: 4,
               details: {
                 description: [
                   '<strong>Editor de Plantillas:</strong> WYSIWYG por cada financiera con variables dinámicas (nombre, monto, fecha).',
@@ -1118,7 +1192,7 @@ const data = {
         {
           code: '2.2', title: 'Seguridad y Control de Acceso', level: 3,
           children: [
-            { code: '2.2.1', title: 'Aislamiento de Datos por Inquilino (Row Level Security)', level: 4,
+            { code: '2.2.1', hito: 2, title: 'Aislamiento de Datos por Inquilino (Row Level Security)', level: 4,
               details: {
                 description: [
                   '<strong>RLS a nivel PostgreSQL:</strong> Políticas RLS de Supabase que filtran automáticamente por tenant_id.',
@@ -1134,7 +1208,7 @@ const data = {
                   tags: ['Supabase', 'PostgreSQL RLS', 'Security'] }
               }
             },
-            { code: '2.2.2', title: 'Autenticación y Doble Factor (2FA)', level: 4,
+            { code: '2.2.2', hito: 2, title: 'Autenticación y Doble Factor (2FA)', level: 4,
               details: {
                 description: [
                   '<strong>Supabase Auth:</strong> Login con email/contraseña, magic link y SSO opcional.',
@@ -1150,7 +1224,7 @@ const data = {
                   tags: ['Supabase Auth', 'TOTP', 'JWT'] }
               }
             },
-            { code: '2.2.3', title: 'Gestión de Perfiles y Usuarios (Roles por Financiera)', level: 4,
+            { code: '2.2.3', hito: 2, title: 'Gestión de Perfiles y Usuarios (Roles por Financiera)', level: 4,
               details: {
                 description: [
                   '<strong>Aislamiento:</strong> Un administrador de la "Financiera A" solo puede crear y gestionar usuarios de su propia empresa, sin ver ni afectar a los de la "Financiera B".',
@@ -1167,7 +1241,7 @@ const data = {
                   tags: ['Supabase Auth', 'PostgreSQL RLS', 'RBAC', 'Multi-Tenant'] }
               }
             },
-            { code: '2.2.4', title: 'Bitácora de Auditoría Global e Inmutable', level: 4,
+            { code: '2.2.4', hito: 2, title: 'Bitácora de Auditoría Global e Inmutable', level: 4,
               details: {
                 description: [
                   '<strong>Log Inmutable:</strong> Registro append-only de toda acción de usuario con hash encadenado.',
@@ -1188,7 +1262,7 @@ const data = {
         {
           code: '2.3', title: 'Configuración de Negocio', level: 3,
           children: [
-            { code: '2.3.1', title: 'Catálogos Maestros y Administración', level: 4,
+            { code: '2.3.1', hito: 2, title: 'Catálogos Maestros y Administración', level: 4,
               details: {
                 description: [
                   '<strong>Catálogos Centralizados:</strong> Estados civiles, ocupaciones, tipos de crédito, documentos requeridos, motivos de operaciones comerciales.',
@@ -1204,7 +1278,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'React'] }
               }
             },
-            { code: '2.3.2', title: 'Configuración por Convenio (Tasas, Montos, Edades)', level: 4,
+            { code: '2.3.2', hito: 2, title: 'Configuración por Convenio (Tasas, Montos, Edades)', level: 4,
               details: {
                 description: [
                   '<strong>Convenios como Productos:</strong> Cada convenio/empresa cliente tiene su producto parametrizable.',
@@ -1220,7 +1294,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'Rules Engine'] }
               }
             },
-            { code: '2.3.3', title: 'Gestor de Plantillas Legales Dinámicas', level: 4,
+            { code: '2.3.3', hito: 2, title: 'Gestor de Plantillas Legales Dinámicas', level: 4,
               details: {
                 description: [
                   '<strong>Editor de Contratos:</strong> WYSIWYG con placeholders que se rellenan al momento de firma.',
@@ -1246,7 +1320,7 @@ const data = {
         {
           code: '3.1', title: 'Workflow de Solicitud (Kanban)', level: 3,
           children: [
-            { code: '3.1.1', title: 'Estados del Workflow: Registro → Mesa Control → Firma → Tesorería → Aprobado/Rechazado', level: 4,
+            { code: '3.1.1', hito: 2, title: 'Estados del Workflow: Registro → Mesa Control → Firma → Tesorería → Aprobado/Rechazado', level: 4,
               details: {
                 description: [
                   '<strong>Tablero Kanban:</strong> Cada solicitud avanza por columnas: Registro, Mesa de Control, Enviar a Firma, Revisión Tesorería, Aprobado, Rechazado.',
@@ -1263,10 +1337,10 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'React DnD', 'Workflow Engine'] }
               }
             },
-            { code: '3.1.2', title: 'Transiciones, Validaciones y Notificaciones', level: 4,
+            { code: '3.1.2', hito: 2, title: 'Transiciones, Validaciones y Notificaciones', level: 4,
               details: {
                 description: [
-                  '<strong>Validaciones Pre-transición:</strong> Para avanzar a "Enviar a Firma" deben estar OK Buró, Listas Negras, expediente completo.',
+                  '<strong>Validaciones Pre-transición:</strong> Para avanzar a "Enviar a Firma" deben estar OK Círculo de Crédito, Listas Negras (si proveedor confirmado), expediente completo.',
                   '<strong>Reglas por Convenio:</strong> Cada producto define qué validaciones son obligatorias.',
                   '<strong>Notificaciones:</strong> WhatsApp/Email al solicitante y al responsable del siguiente paso (via n8n).'
                 ],
@@ -1284,7 +1358,7 @@ const data = {
         {
           code: '3.2', title: 'Captura de Solicitud', level: 3,
           children: [
-            { code: '3.2.1', title: 'Consulta por RFC / Cliente Histórico', level: 4,
+            { code: '3.2.1', hito: 2, title: 'Consulta por RFC / Cliente Histórico', level: 4,
               details: {
                 description: [
                   '<strong>Detección de Cliente Existente:</strong> Al ingresar RFC, el sistema busca en la BD y precarga sus datos si ya fue cliente.',
@@ -1300,7 +1374,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'PostgreSQL'] }
               }
             },
-            { code: '3.2.2', title: 'Datos Personales, Vivienda y Laborales', level: 4,
+            { code: '3.2.2', hito: 2, title: 'Datos Personales, Vivienda y Laborales', level: 4,
               details: {
                 description: [
                   '<strong>Formulario Multi-paso:</strong> Pestañas lógicas: Datos Básicos, Referencias, Datos Laborales, PLD, Datos Complementarios.',
@@ -1316,7 +1390,7 @@ const data = {
                   tags: ['Next.js', 'React Hook Form', 'Supabase', 'Zod'] }
               }
             },
-            { code: '3.2.3', title: 'Referencias, Dependientes, Aval y Testigos', level: 4,
+            { code: '3.2.3', hito: 2, title: 'Referencias, Dependientes, Aval y Testigos', level: 4,
               details: {
                 description: [
                   '<strong>Referencias Personales:</strong> Captura de contactos que conocen al solicitante (nombre, parentesco, teléfono).',
@@ -1325,7 +1399,7 @@ const data = {
                   '<strong>Testigos:</strong> Datos de testigos requeridos para firma del contrato.'
                 ],
                 rules: [
-                  'El aval pasa por el mismo flujo de validación (Buró, Listas Negras) que el acreditado.',
+                  'El aval pasa por el mismo flujo de validación (Círculo de Crédito, Listas Negras) que el acreditado.',
                   'Mínimo 2 referencias personales no familiares por solicitud.',
                   'Los testigos deben tener identificación oficial vigente registrada.'
                 ],
@@ -1333,7 +1407,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'React Hook Form'] }
               }
             },
-            { code: '3.2.4', title: 'Tipo de Crédito (Nuevo / Renovación / Compra / Adelanto)', level: 4,
+            { code: '3.2.4', hito: 2, title: 'Tipo de Crédito (Nuevo / Renovación / Compra / Adelanto)', level: 4,
               details: {
                 description: [
                   '<strong>Selección al Inicio:</strong> El operador selecciona el tipo que determina el flujo y documentos requeridos.',
@@ -1350,7 +1424,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'Rules Engine'] }
               }
             },
-            { code: '3.2.5', title: 'Cuentas Bancarias Múltiples del Acreditado', level: 4,
+            { code: '3.2.5', hito: 2, title: 'Cuentas Bancarias Múltiples del Acreditado', level: 4,
               details: {
                 description: [
                   '<strong>Alta de N Cuentas:</strong> Un cliente puede registrar varias cuentas CLABE para recibir dispersión.',
@@ -1366,7 +1440,7 @@ const data = {
                   tags: ['STP API', 'Supabase', 'Next.js'] }
               }
             },
-            { code: '3.2.6', title: 'Cotizador y Tabla de Amortización Preliminar', level: 4,
+            { code: '3.2.6', hito: 2, title: 'Cotizador y Tabla de Amortización Preliminar', level: 4,
               details: {
                 description: [
                   '<strong>Cálculo en Línea:</strong> El operador ajusta monto y plazo y ve en tiempo real pagos y CAT.',
@@ -1385,45 +1459,48 @@ const data = {
           ]
         },
         {
-          code: '3.3', title: 'Validación y Compliance', level: 3, tbd: true,
+          code: '3.3', title: 'Validación y Compliance', level: 3,
           children: [
-            { code: '3.3.1', title: 'OCR con IA para Extracción Documental', level: 4, tbd: true,
+            { code: '3.3.1', hito: 2, title: 'OCR con IA para Extracción Documental (Google Gemini 1.5 Pro)', level: 4, externalProvider: true,
               details: {
                 description: [
-                  '<strong>Extracción Automática:</strong> INE, comprobantes de domicilio, recibos de nómina, CURP.',
-                  '<strong>IA de Visión:</strong> Servicio de visión por IA para lectura y validación de documentos.',
-                  '<strong>Prellenado:</strong> Los datos extraídos prellenan el formulario del solicitante.'
+                  '<strong>Extracción Automática:</strong> INE, comprobantes de domicilio, recibos de nómina, CURP mediante Google Gemini 1.5 Pro.',
+                  '<strong>Prellenado:</strong> Los datos extraídos prellenan automáticamente el formulario del solicitante.',
+                  '<strong>INCLUIDO en contrato (Anexo A §3.3.1):</strong> Integración de desarrollo incluida; módulo configurable on/off por tenant.',
+                  '<strong>Costo API:</strong> El Cliente contrata y paga el consumo de Google Gemini en producción (~$15 USD/mes estimado).',
+                  '<strong>Sandbox requerido:</strong> El Cliente debe proporcionar cuenta sandbox de Google Gemini para pruebas previas al Go-Live. Las credenciales se configuran como variables de entorno.'
                 ],
                 rules: [
                   'Confianza mínima del OCR del 85% para auto-aceptar; por debajo va a revisión manual.',
                   'Los documentos se almacenan cifrados en Supabase Storage con política RLS por tenant.'
                 ],
                 estimation: { effort: '10 días', priority: 'Alta', team: '1 Backend + 1 ML', complexity: 'Alta',
-                  tags: ['IA Visión', 'Supabase Storage', 'Next.js'] }
+                  tags: ['Google Gemini 1.5 Pro', 'Supabase Storage', 'Next.js'] }
               }
             },
-            { code: '3.3.2', title: 'Consulta Buró de Crédito / Círculo de Crédito', level: 4, tbd: true,
+            { code: '3.3.2', hito: 2, title: 'Consulta Círculo de Crédito', level: 4, externalProvider: true,
               details: {
                 description: [
-                  '<strong>Integración API:</strong> Consulta en vivo a Buró de Crédito y Círculo de Crédito.',
-                  '<strong>Score y Alertas:</strong> Lectura del score y reporte de obligaciones vigentes y vencidas.',
-                  '<strong>Almacenamiento Controlado:</strong> El reporte se guarda cifrado con acceso limitado por rol.'
+                  '<strong>Integración API:</strong> Consulta en vivo a Círculo de Crédito (score y reporte de obligaciones vigentes y vencidas). La contratación de la API corre por cuenta del Cliente.',
+                  '<strong>Almacenamiento Controlado:</strong> El reporte se guarda cifrado con acceso limitado por rol.',
+                  '<strong>Trazabilidad:</strong> Cada consulta queda registrada en bitácora con fecha, usuario y resultado.'
                 ],
                 rules: [
-                  'Consulta con autorización expresa del solicitante (NIP del Buró).',
+                  'Consulta con autorización expresa del solicitante.',
                   'Los resultados se almacenan por un máximo de 90 días.',
-                  'La consulta del aval es obligatoria y con su propio NIP.'
+                  'La consulta del aval es obligatoria.'
                 ],
                 estimation: { effort: '8 días', priority: 'Crítica', team: '1 Backend', complexity: 'Alta',
-                  tags: ['Buró de Crédito', 'Círculo de Crédito', 'API REST'] }
+                  tags: ['Círculo de Crédito', 'API REST', 'Supabase'] }
               }
             },
-            { code: '3.3.3', title: 'Listas Negras (OFAC, SAT, PEP, PLD)', level: 4, tbd: true,
+            { code: '3.3.3', hito: 2, title: 'Listas Negras (OFAC, SAT, PEP, PLD)', level: 4, tbd: true,
               details: {
                 description: [
-                  '<strong>Listas Consultadas:</strong> OFAC, SAT (69-B), PEP (Personas Políticamente Expuestas), listas internas PLD.',
+                  '<strong>Listas Consultadas:</strong> OFAC, SAT (69-B), PEP (Personas Políticamente Expuestas).',
                   '<strong>Match Automático:</strong> El sistema compara acreditado, aval y testigos contra todas las listas.',
-                  '<strong>Trazabilidad:</strong> Evidencia de la consulta y resultado se archiva con la solicitud.'
+                  '<strong>Trazabilidad:</strong> Evidencia de la consulta y resultado se archiva con la solicitud.',
+                  '<strong>TBD — Proveedor API pendiente (Anexo A §3.3.3):</strong> La integración está INCLUIDA en el desarrollo. El Cliente debe elegir y contratar el proveedor (Truora, MetaMap, Comply Advantage u otro con API REST) y proporcionar sandbox. Si no se confirma antes del Hito 2, el módulo queda bloqueado hasta tener accesos.'
                 ],
                 rules: [
                   'Coincidencia en OFAC o PEP → rechazo automático con escalamiento al Oficial de Cumplimiento.',
@@ -1439,7 +1516,7 @@ const data = {
         {
           code: '3.4', title: 'Formalización y Firma', level: 3,
           children: [
-            { code: '3.4.1', title: 'Generación Automática de Contrato', level: 4,
+            { code: '3.4.1', hito: 3, title: 'Generación Automática de Contrato', level: 4,
               details: {
                 description: [
                   '<strong>Merge de Plantilla + Datos:</strong> El sistema genera el contrato usando la plantilla legal vigente y los datos de la solicitud.',
@@ -1455,12 +1532,14 @@ const data = {
                   tags: ['Docx-Templater', 'PDF', 'Supabase Storage'] }
               }
             },
-            { code: '3.4.2', title: 'Firma Digital NOM-151 (ZapSign)', level: 4, tbd: true,
+            { code: '3.4.2', hito: 3, title: 'Firma Digital NOM-151 (Proveedor externo / ZapSign)', level: 4, externalProvider: true,
               details: {
                 description: [
-                  '<strong>Firma Electrónica Avanzada:</strong> Envío a ZapSign cumpliendo NOM-151-SCFI-2016.',
+                  '<strong>INCLUIDO en contrato (Anexo A §3.4.2):</strong> Integración de firma electrónica avanzada NOM-151-SCFI-2016 incluida en el desarrollo.',
+                  '<strong>Proveedor externo:</strong> El Cliente contrata directamente con el proveedor de firma (ej. ZapSign u otro equivalente NOM-151).',
                   '<strong>Constancia NOM-151:</strong> Cada documento firmado regresa con constancia y timestamp.',
-                  '<strong>Multi-firmante:</strong> Acreditado, aval, testigos y representante legal en el mismo expediente.'
+                  '<strong>Multi-firmante:</strong> Acreditado, aval, testigos y representante legal en el mismo expediente.',
+                  '<strong>Sandbox requerido:</strong> El Cliente debe proporcionar acceso a la API de ZapSign con cuenta sandbox y documentación de uso. Las credenciales de producción se configuran como variables de entorno.'
                 ],
                 rules: [
                   'La firma debe completarse en máximo 48 horas tras su envío.',
@@ -1481,7 +1560,7 @@ const data = {
         {
           code: '4.1', title: 'Kanban de Cartera', level: 3,
           children: [
-            { code: '4.1.1', title: 'Estados: Inicio, Activo, Cancelado, Terminado', level: 4,
+            { code: '4.1.1', hito: 3, title: 'Estados: Inicio, Activo, Cancelado, Terminado', level: 4,
               details: {
                 description: [
                   '<strong>Vista Tipo Kanban:</strong> Tablero con 4 columnas mostrando todos los créditos de la financiera.',
@@ -1504,7 +1583,7 @@ const data = {
         {
           code: '4.2', title: 'Vista Detallada del Crédito', level: 3,
           children: [
-            { code: '4.2.1', title: 'Amortizaciones (Tabla y Estado)', level: 4,
+            { code: '4.2.1', hito: 3, title: 'Amortizaciones (Tabla y Estado)', level: 4,
               details: {
                 description: [
                   '<strong>Tabla Completa:</strong> Muestra cada cuota con fecha, capital, interés, IVA, moratorio y saldo.',
@@ -1520,7 +1599,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'Decimal.js'] }
               }
             },
-            { code: '4.2.2', title: 'Pagos (Historial y Aplicación)', level: 4,
+            { code: '4.2.2', hito: 3, title: 'Pagos (Historial y Aplicación)', level: 4,
               details: {
                 description: [
                   '<strong>Historial de Pagos:</strong> Todos los pagos aplicados al crédito con fecha, monto, medio y referencia.',
@@ -1536,7 +1615,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'PostgreSQL'] }
               }
             },
-            { code: '4.2.3', title: 'Contabilidad del Crédito (Pólizas)', level: 4,
+            { code: '4.2.3', hito: 3, title: 'Contabilidad del Crédito (Pólizas)', level: 4,
               details: {
                 description: [
                   '<strong>Pólizas Generadas:</strong> Cada movimiento (desembolso, devengamiento, pago, operación comercial) genera póliza.',
@@ -1552,10 +1631,10 @@ const data = {
                   tags: ['Supabase', 'PostgreSQL', 'Accounting'] }
               }
             },
-            { code: '4.2.4', title: 'Documentos del Crédito', level: 4,
+            { code: '4.2.4', hito: 3, title: 'Documentos del Crédito', level: 4,
               details: {
                 description: [
-                  '<strong>Bóveda Documental:</strong> Contrato firmado, pagaré, constancia NOM-151, INE, comprobantes, autorización Buró.',
+                  '<strong>Bóveda Documental:</strong> Contrato firmado, pagaré, constancia NOM-151, INE, comprobantes, autorización Círculo de Crédito.',
                   '<strong>Acceso Controlado:</strong> Sólo roles autorizados pueden descargar documentos originales.',
                   '<strong>Inmutabilidad:</strong> Todos los documentos guardan hash para verificación.'
                 ],
@@ -1573,7 +1652,7 @@ const data = {
         {
           code: '4.3', title: 'Motor de Cálculos y Cobranza', level: 3,
           children: [
-            { code: '4.3.1', title: 'Algoritmo de Amortización (Saldos Insolutos)', level: 4,
+            { code: '4.3.1', hito: 3, title: 'Algoritmo de Amortización (Saldos Insolutos)', level: 4,
               details: {
                 description: [
                   '<strong>Sistema Francés:</strong> Pagos fijos con proporción variable de capital e interés.',
@@ -1589,7 +1668,7 @@ const data = {
                   tags: ['Next.js', 'Decimal.js', 'PostgreSQL'] }
               }
             },
-            { code: '4.3.2', title: 'Proceso de Actualización de Saldos Diarios', level: 4,
+            { code: '4.3.2', hito: 3, title: 'Proceso de Actualización de Saldos Diarios', level: 4,
               details: {
                 description: [
                   '<strong>Proceso Batch de Madrugada:</strong> Devengamiento automatizado de intereses al cierre de cada día.',
@@ -1605,7 +1684,7 @@ const data = {
                   tags: ['Supabase', 'pg_cron', 'Edge Functions'] }
               }
             },
-            { code: '4.3.3', title: 'Promesas de Pago y Escalamiento de Cobranza', level: 4,
+            { code: '4.3.3', hito: 3, title: 'Promesas de Pago y Escalamiento de Cobranza', level: 4,
               details: {
                 description: [
                   '<strong>Promesas de Pago:</strong> Registro de compromisos con fecha y monto comprometidos.',
@@ -1626,9 +1705,10 @@ const data = {
         {
           code: '4.4', title: 'Operaciones Comerciales / Especiales', level: 3,
           children: [
-            { code: '4.4.1', title: 'Condonación de Interés Moratorio', level: 4, tbd: true,
+            { code: '4.4.1', hito: 4, title: 'Condonación de Interés Moratorio', level: 4, tbd: true,
               details: {
                 description: [
+                  '<strong>TBD — Confirmar con Cliente (Anexo A §4.4):</strong> Pendiente de confirmación antes del Hito 4. La integración se desarrolla si el Cliente la confirma.',
                   '<strong>Quita de Moratorios:</strong> El autorizado condona parcial o totalmente los intereses moratorios acumulados.',
                   '<strong>Propuesta Antes/Después:</strong> El sistema muestra el estado actual y cómo queda después de aplicar la condonación.',
                   '<strong>Trazabilidad Total:</strong> Motivo, autorizante y monto quedan en bitácora inmutable.'
@@ -1642,9 +1722,10 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'Decimal.js'] }
               }
             },
-            { code: '4.4.2', title: 'Quitas (Capital y/o Intereses)', level: 4, tbd: true,
+            { code: '4.4.2', hito: 4, title: 'Quitas (Capital y/o Intereses)', level: 4, tbd: true,
               details: {
                 description: [
+                  '<strong>TBD — Confirmar con Cliente (Anexo A §4.4):</strong> Pendiente de confirmación antes del Hito 4.',
                   '<strong>Quita Parcial:</strong> Se perdona un monto específico de capital o intereses.',
                   '<strong>Propuesta Antes/Después:</strong> Vista comparativa antes y después de aplicar la quita.',
                   '<strong>Impacto en Tabla:</strong> La tabla de amortización se regenera reflejando la quita.'
@@ -1658,7 +1739,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'PDF'] }
               }
             },
-            { code: '4.4.3', title: 'Abono a Capital', level: 4,
+            { code: '4.4.3', hito: 4, title: 'Abono a Capital', level: 4,
               details: {
                 description: [
                   '<strong>Pago Extraordinario:</strong> El cliente hace un abono adicional destinado a capital.',
@@ -1674,7 +1755,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'Decimal.js'] }
               }
             },
-            { code: '4.4.4', title: 'Liquidación Anticipada', level: 4,
+            { code: '4.4.4', hito: 4, title: 'Liquidación Anticipada', level: 4,
               details: {
                 description: [
                   '<strong>Cálculo de Finiquito:</strong> El sistema calcula el saldo total a liquidar con/sin penalización.',
@@ -1690,7 +1771,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'PDF'] }
               }
             },
-            { code: '4.4.5', title: 'Restructura del Crédito', level: 4,
+            { code: '4.4.5', hito: 4, title: 'Restructura del Crédito', level: 4,
               details: {
                 description: [
                   '<strong>Nuevo Plan:</strong> Se genera una nueva tabla de amortización con nuevas condiciones (plazo, tasa, gracia).',
@@ -1706,9 +1787,10 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'ZapSign'] }
               }
             },
-            { code: '4.4.6', title: 'Aplazamiento de Pagos', level: 4, tbd: true,
+            { code: '4.4.6', hito: 4, title: 'Aplazamiento de Pagos', level: 4, tbd: true,
               details: {
                 description: [
+                  '<strong>TBD — Confirmar con Cliente (Anexo A §4.4):</strong> Pendiente de confirmación antes del Hito 4.',
                   '<strong>Diferimiento:</strong> El cliente solicita aplazar 1 o más cuotas para pagarlas en el futuro.',
                   '<strong>Sin Modificar Capital:</strong> El capital no cambia; se recalcula el calendario.',
                   '<strong>Tope Configurable:</strong> Máximo de aplazamientos por crédito/convenio.'
@@ -1722,7 +1804,7 @@ const data = {
                   tags: ['Next.js', 'Supabase'] }
               }
             },
-            { code: '4.4.7', title: 'Cobrar Cuotas (Aplicación Manual)', level: 4,
+            { code: '4.4.7', hito: 4, title: 'Cobrar Cuotas (Aplicación Manual)', level: 4,
               details: {
                 description: [
                   '<strong>Aplicación Puntual:</strong> El operador aplica una cuota específica con monto, fecha y referencia.',
@@ -1738,12 +1820,12 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'n8n'] }
               }
             },
-            { code: '4.4.8', title: 'Traslado a Cartera Vencida', level: 4,
+            { code: '4.4.8', hito: 4, title: 'Traslado a Cartera Vencida', level: 4,
               details: {
                 description: [
                   '<strong>Clasificación CNBV:</strong> Al superar los días de atraso definidos, el crédito se reclasifica a Cartera Vencida.',
                   '<strong>Automatización:</strong> El proceso de saldos diarios reclasifica automáticamente al rebasar el umbral.',
-                  '<strong>Reporteo:</strong> Los créditos vencidos se reportan en los entregables regulatorios.'
+                  '<strong>Reporteo:</strong> Los créditos vencidos aparecen en reportes operativos incluidos (no XML regulatorio SITI).'
                 ],
                 rules: [
                   'La reclasificación es automática pero auditada.',
@@ -1754,9 +1836,10 @@ const data = {
                   tags: ['Supabase', 'pg_cron', 'CNBV'] }
               }
             },
-            { code: '4.4.9', title: 'Operaciones Especiales de Arrendamiento', level: 4, tbd: true,
+            { code: '4.4.9', hito: 4, title: 'Operaciones Especiales de Arrendamiento', level: 4, tbd: true,
               details: {
                 description: [
+                  '<strong>TBD — Confirmar con Cliente (Anexo A §4.4):</strong> Operaciones especiales del producto Arrendamiento pendientes de definición.',
                   '<strong>Específicas para Arrendamiento:</strong> Modificaciones de plazo, ajustes por residual, opciones de compra anticipada.',
                   '<strong>Tratamiento Contable Diferenciado:</strong> Las operaciones se asientan según la naturaleza del arrendamiento.',
                   '<strong>Addendum al Contrato:</strong> Cada operación se documenta con addendum firmado.'
@@ -1780,7 +1863,7 @@ const data = {
         {
           code: '5.1', title: 'Dispersión y Conciliación', level: 3,
           children: [
-            { code: '5.1.1', title: 'Dispersión Automática vía API STP (SPEI)', level: 4,
+            { code: '5.1.1', hito: 3, title: 'Dispersión Automática vía API STP (SPEI)', level: 4,
               details: {
                 description: [
                   '<strong>Integración STP:</strong> Envío SPEI 24/7 directamente a cuentas del acreditado.',
@@ -1796,7 +1879,7 @@ const data = {
                   tags: ['STP API', 'SPEI', 'CEP', 'Supabase'] }
               }
             },
-            { code: '5.1.2', title: 'Aplicación de Pagos Masivos (Layouts)', level: 4,
+            { code: '5.1.2', hito: 3, title: 'Aplicación de Pagos Masivos (Layouts)', level: 4,
               details: {
                 description: [
                   '<strong>Procesamiento Batch:</strong> Lectura de archivos CSV/Excel (nómina, bancos) con descuentos múltiples.',
@@ -1812,7 +1895,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'CSV Parser'] }
               }
             },
-            { code: '5.1.3', title: 'Conciliación Bancaria y Cuentas CLABE Individuales', level: 4,
+            { code: '5.1.3', hito: 3, title: 'Conciliación Bancaria y Cuentas CLABE Individuales', level: 4,
               details: {
                 description: [
                   '<strong>CLABE por Crédito:</strong> Cada crédito puede tener su CLABE única STP para pagos directos.',
@@ -1829,6 +1912,43 @@ const data = {
               }
             }
           ]
+        },
+        {
+          code: '5.2', title: 'Control del Fondeo a la Cuenta Maestra', level: 3,
+          children: [
+            { code: '5.2.1', hito: 3, title: 'Registro de Movimientos y Saldo Disponible', level: 4,
+              details: {
+                description: [
+                  '<strong>Registro de Entradas:</strong> Alta manual de movimientos de fondeo con fecha, monto y origen del recurso.',
+                  '<strong>Saldo Disponible:</strong> Pantalla en tiempo real con el saldo neto de la cuenta maestra (entradas menos dispersiones).',
+                  '<strong>Validación Previa:</strong> El sistema bloquea cualquier dispersión si el saldo disponible es insuficiente.'
+                ],
+                rules: [
+                  'Toda entrada de fondeo requiere fecha, monto y origen documentado.',
+                  'El saldo disponible se recalcula automáticamente tras cada dispersión o registro de entrada.',
+                  'Solo roles de Tesorería y Super Admin pueden registrar movimientos de fondeo.'
+                ],
+                estimation: { effort: '5 días', priority: 'Crítica', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'STP'] }
+              }
+            },
+            { code: '5.2.2', hito: 3, title: 'Alertas de Saldo Bajo y Reporte de Movimientos', level: 4,
+              details: {
+                description: [
+                  '<strong>Alertas Configurables:</strong> El administrador define el umbral de saldo bajo; al alcanzarlo, el sistema notifica automáticamente al equipo de tesorería.',
+                  '<strong>Reporte de Movimientos:</strong> Vista de entradas vs. salidas por periodo y origen, exportable a Excel/PDF.',
+                  '<strong>Conciliación de Fondeo:</strong> Cruce entre fondeo registrado y dispersiones efectivamente realizadas para identificar diferencias.'
+                ],
+                rules: [
+                  'El umbral de alerta de saldo bajo es configurable por tenant.',
+                  'Las alertas se envían por email y/o WhatsApp según la configuración de notificaciones.',
+                  'El reporte de movimientos debe cuadrar con el estado de cuenta del banco (conciliación manual).'
+                ],
+                estimation: { effort: '4 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'n8n', 'SheetJS'] }
+              }
+            }
+          ]
         }
       ]
     },
@@ -1838,7 +1958,7 @@ const data = {
         {
           code: '6.1', title: 'Reportes Operativos', level: 3,
           children: [
-            { code: '6.1.1', title: 'Reportes de Cobranza, Amortizaciones y Desembolsos', level: 4,
+            { code: '6.1.1', hito: 4, title: 'Reportes de Cobranza, Amortizaciones y Desembolsos', level: 4,
               details: {
                 description: [
                   '<strong>Lista de Cobranza:</strong> Créditos con cuota pendiente en el periodo, agrupados por convenio o cobrador.',
@@ -1854,7 +1974,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'SheetJS'] }
               }
             },
-            { code: '6.1.2', title: 'Estados de Cuenta con URL Pública', level: 4,
+            { code: '6.1.2', hito: 4, title: 'Estados de Cuenta con URL Pública', level: 4,
               details: {
                 description: [
                   '<strong>Estado de Cuenta Individual:</strong> Resumen del crédito con cuotas, saldo, próximo pago.',
@@ -1870,7 +1990,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'JWT', 'PDF'] }
               }
             },
-            { code: '6.1.3', title: 'Reportes de Cartera, Pagos, Saldos y Movimientos', level: 4,
+            { code: '6.1.3', hito: 4, title: 'Reportes de Cartera, Pagos, Saldos y Movimientos', level: 4,
               details: {
                 description: [
                   '<strong>Cartera:</strong> Composición vigente vs vencida, por convenio, producto, antigüedad.',
@@ -1887,7 +2007,7 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'SheetJS', 'Vercel Queue'] }
               }
             },
-            { code: '6.1.4', title: 'Bitácoras Operativas', level: 4,
+            { code: '6.1.4', hito: 4, title: 'Bitácoras Operativas', level: 4,
               details: {
                 description: [
                   '<strong>Bitácora de Acciones:</strong> Registro de todas las operaciones (logins, cambios, operaciones comerciales).',
@@ -1906,14 +2026,15 @@ const data = {
           ]
         },
         {
-          code: '6.2', title: 'Contabilidad y Regulatorio', level: 3,
+          code: '6.2', title: 'Registro Contable y Pólizas (SOFOM ENR)', level: 3,
           children: [
-            { code: '6.2.1', title: 'Registro Contable y Pólizas', level: 4, tbd: true,
+            { code: '6.2.1', hito: 4, title: 'Registro Contable y Pólizas', level: 4,
               details: {
                 description: [
                   '<strong>Generación Automática:</strong> Cada evento (desembolso, devengamiento, pago, operación) genera póliza contable.',
                   '<strong>Catálogo de Cuentas:</strong> Configurable por financiera según su plan contable.',
-                  '<strong>Exportación:</strong> Layouts para sistemas contables externos (COI, Contpaq, etc.).'
+                  '<strong>Exportación:</strong> Layouts para sistemas contables externos (COI, Contpaq, etc.).',
+                  '<strong>Fuera de alcance:</strong> Reportes regulatorios XML CNBV vía SITI (R-04, R-15, etc.) — solo aplican a SOFOM ER (Anexo A §4.3).'
                 ],
                 rules: [
                   'Las pólizas deben cuadrar debe/haber al centavo.',
@@ -1924,28 +2045,12 @@ const data = {
                   tags: ['Supabase', 'PostgreSQL', 'Accounting'] }
               }
             },
-            { code: '6.2.2', title: 'Reportes Regulatorios CNBV (XML) y PLD', level: 4, tbd: true,
-              details: {
-                description: [
-                  '<strong>Matriz de Riesgo PLD:</strong> Evaluación automatizada de cada cliente (bajo, medio, alto).',
-                  '<strong>XML CNBV:</strong> Generación del reporte en formato XML para entrega mensual.',
-                  '<strong>Monitoreo Continuo:</strong> Alertas ante operaciones inusuales o relevantes.'
-                ],
-                rules: [
-                  'Los reportes se generan y entregan a más tardar el día 10 del mes siguiente.',
-                  'Todo cambio de nivel de riesgo queda registrado con justificación.',
-                  'Las operaciones inusuales se notifican al Oficial de Cumplimiento en menos de 24 horas.'
-                ],
-                estimation: { effort: '10 días', priority: 'Crítica', team: '1 Backend + 1 Compliance', complexity: 'Alta',
-                  tags: ['XML CNBV', 'PLD', 'Supabase'] }
-              }
-            }
           ]
         },
         {
           code: '6.3', title: 'BI y Reporteo Genérico', level: 3,
           children: [
-            { code: '6.3.1', title: 'Módulo Genérico de Reporteo y Dashboards', level: 4,
+            { code: '6.3.1', hito: 4, title: 'Módulo Genérico de Reporteo y Dashboards', level: 4,
               details: {
                 description: [
                   '<strong>Constructor de Reportes:</strong> Los usuarios construyen sus propios reportes sin tocar código.',
@@ -1962,6 +2067,46 @@ const data = {
               }
             }
           ]
+        },
+        {
+          code: '6.4', title: 'Respaldos y Recuperación', level: 3,
+          children: [
+            { code: '6.4.1', hito: 4, title: 'Pipeline Automatizado de Respaldo Diario (n8n)', level: 4,
+              details: {
+                description: [
+                  '<strong>Dump diario cifrado:</strong> Cada 24 horas n8n genera un dump completo de la BD Supabase, lo comprime, cifra con clave dedicada y lo envía al repositorio destino del Cliente.',
+                  '<strong>Repositorio destino configurable:</strong> Bucket S3-compatible (AWS S3, MinIO, Wasabi, Backblaze B2) o servicios de archivo (Google Drive, OneDrive, Dropbox, Mega) con credenciales provistas por el Cliente.',
+                  '<strong>Bitácora de ejecuciones:</strong> Cada corrida (exitosa o fallida) queda registrada con fecha, duración, tamaño del dump, destino y resultado. Error dispara alerta automática al equipo de operaciones.',
+                  '<strong>Política de retención configurable:</strong> El administrador define cuántos días se conservan en local (VPS) y cuántos en el repositorio destino antes de aplicar rotación.'
+                ],
+                rules: [
+                  'El respaldo debe completarse y confirmarse antes de las 6:00 AM.',
+                  'El dump se cifra antes de salir del servidor; las claves no se almacenan en texto plano.',
+                  'El Cliente es responsable de contratar y custodiar el repositorio destino para conservación a 10 años.'
+                ],
+                estimation: { effort: '5 días', priority: 'Crítica', team: '1 Backend + 1 DevOps', complexity: 'Media',
+                  tags: ['n8n', 'Supabase', 'S3', 'VPS'] }
+              }
+            },
+            { code: '6.4.2', hito: 4, title: 'Panel de Administración de Respaldos', level: 4,
+              details: {
+                description: [
+                  '<strong>Estado del último respaldo:</strong> Dashboard con resultado (exitoso/fallido/en curso), fecha y hora exactas.',
+                  '<strong>Bitácora histórica:</strong> Listado de todas las ejecuciones del pipeline, filtrable por fecha y resultado.',
+                  '<strong>Descarga manual:</strong> Botón para descargar cualquier respaldo histórico disponible en el repositorio.',
+                  '<strong>Ejecución manual bajo demanda:</strong> El administrador puede disparar un respaldo fuera del horario programado.',
+                  '<strong>Restauración semi-automatizada:</strong> El administrador selecciona un respaldo, confirma con doble factor y el sistema ejecuta la restauración reportando el resultado.'
+                ],
+                rules: [
+                  'Solo el rol Super Admin puede acceder al panel de respaldos.',
+                  'La restauración requiere confirmación de doble factor.',
+                  'El panel incluye runbook de respaldo y restauración para fines de auditoría.'
+                ],
+                estimation: { effort: '5 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'n8n', 'S3'] }
+              }
+            }
+          ]
         }
       ]
     },
@@ -1971,12 +2116,14 @@ const data = {
         {
           code: '7.1', title: 'Notificaciones Automatizadas (n8n)', level: 3,
           children: [
-            { code: '7.1.1', title: 'WhatsApp Business (Orquestación con n8n)', level: 4, tbd: true,
+            { code: '7.1.1', hito: 4, title: 'WhatsApp Business (Orquestación con n8n)', level: 4, externalProvider: true,
               details: {
                 description: [
-                  '<strong>Workflows en n8n:</strong> Disparadores por eventos (solicitud creada, cuota vencida, pago aplicado, etc.).',
-                  '<strong>Plantillas Aprobadas:</strong> Uso de mensajes WhatsApp Business API.',
-                  '<strong>Segmentación por Tenant:</strong> Cada financiera tiene sus propias plantillas y número.'
+                  '<strong>INCLUIDO en contrato (Anexo A §7.1):</strong> Integración de notificaciones WhatsApp incluida en el desarrollo (Hito 4).',
+                  '<strong>Workflows en n8n:</strong> Disparadores por eventos (solicitud creada, cuota vencida, pago aplicado, etc.). Se definirá con el Cliente en qué operación/estatus se generan.',
+                  '<strong>Plantillas Aprobadas:</strong> Uso de mensajes WhatsApp Business API. Integración incluida en el desarrollo.',
+                  '<strong>Segmentación por Tenant:</strong> Cada financiera tiene sus propias plantillas y número.',
+                  '<strong>Sandbox requerido:</strong> El Cliente crea una app en Meta for Developers con números de prueba registrados. Para producción requiere aprobación de Meta y contratar BSP (360dialog, Twilio u otro). Credenciales configuradas como variables de entorno.'
                 ],
                 rules: [
                   'Toda notificación queda registrada en bitácora.',
@@ -1987,12 +2134,14 @@ const data = {
                   tags: ['n8n', 'WhatsApp Business API', 'Supabase'] }
               }
             },
-            { code: '7.1.2', title: 'Email Transaccional', level: 4, tbd: true,
+            { code: '7.1.2', hito: 4, title: 'Email Transaccional (Resend / SendGrid)', level: 4, externalProvider: true,
               details: {
                 description: [
+                  '<strong>INCLUIDO en contrato (Anexo A §7.1):</strong> Integración de email transaccional incluida en el desarrollo (Hito 4).',
                   '<strong>Emails Críticos:</strong> Confirmaciones, recordatorios, estados de cuenta, recibos.',
                   '<strong>Plantillas por Tenant:</strong> Branding propio por financiera.',
-                  '<strong>Tracking:</strong> Aperturas, clics, entregas, rebotes.'
+                  '<strong>Tracking:</strong> Aperturas, clics, entregas, rebotes.',
+                  '<strong>Sandbox disponible de inmediato:</strong> Resend y SendGrid tienen tier gratuito para pruebas. El Cliente contrata el plan de pago para producción y cubre el costo de envíos (~$20 USD/mes). Credenciales configuradas como variables de entorno.'
                 ],
                 rules: [
                   'Toda notificación queda registrada en bitácora.',
@@ -2000,7 +2149,7 @@ const data = {
                   'Los clientes pueden optar por no recibir emails (opt-out).'
                 ],
                 estimation: { effort: '4 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
-                  tags: ['n8n', 'Email', 'Handlebars', 'Supabase'] }
+                  tags: ['n8n', 'Resend', 'SendGrid', 'Handlebars', 'Supabase'] }
               }
             }
           ]
@@ -2008,7 +2157,7 @@ const data = {
         {
           code: '7.2', title: 'APIs e Integraciones Externas', level: 3,
           children: [
-            { code: '7.2.1', title: 'APIs REST Públicas y Webhooks', level: 4,
+            { code: '7.2.1', hito: 4, title: 'APIs REST Públicas y Webhooks', level: 4,
               details: {
                 description: [
                   '<strong>API REST Documentada:</strong> Endpoints públicos para consulta de crédito, pago, estado de cuenta.',
@@ -2029,55 +2178,28 @@ const data = {
       ]
     },
     {
-      code: '8.0', title: 'Migración de Datos (Odoo)', level: 2, separateProject: true,
-      children: [
-        {
-          code: '8.1', title: 'Transición desde Odoo', level: 3, separateProject: true,
-          children: [
-            { code: '8.1.1', title: 'Mapeo, Limpieza y Auditoría Espejo de Cartera', level: 4, separateProject: true,
-              details: {
-                description: [
-                  '<strong>Mapeo de Esquemas:</strong> Traducción del modelo Odoo al modelo SOFOM con reglas documentadas.',
-                  '<strong>Limpieza de Datos:</strong> Normalización, deduplicación y reconciliación de inconsistencias.',
-                  '<strong>Migración Espejo:</strong> SOFOM y Odoo operan en paralelo hasta validar que los saldos cuadran 100%.'
-                ],
-                rules: [
-                  'La migración solo avanza tras el visto bueno de contabilidad y auditoría.',
-                  'Cada registro migrado tiene su ID origen (Odoo) para trazabilidad.',
-                  'Los 250 MDP en ~4,000 créditos se migran en oleadas controladas.',
-                  'Plan de rollback documentado y probado antes del switch.'
-                ],
-                estimation: { effort: '15 días', priority: 'Crítica', team: '1 Data + 1 Backend + 1 QA', complexity: 'Alta',
-                  tags: ['Odoo', 'Supabase', 'PostgreSQL', 'ETL'] }
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
       code: '9.0', title: 'QA, Documentación y Lanzamiento', level: 2,
       children: [
         {
           code: '9.1', title: 'Calidad y Pruebas', level: 3,
           children: [
-            { code: '9.1.1', title: 'Pruebas Automatizadas (Unit + E2E)', level: 4, tbd: true,
+            { code: '9.1.1', hito: 5, title: 'Pruebas Funcionales y de Regresión (Manuales)', level: 4,
               details: {
                 description: [
-                  '<strong>Unitarias:</strong> Cobertura de lógica financiera, cálculos y reglas de negocio.',
-                  '<strong>Integración / E2E:</strong> Flujos completos: originación, pago, dispersión.',
-                  '<strong>Pipeline CI:</strong> Pruebas ejecutadas en cada PR antes de mergear.'
+                  '<strong>Pruebas Funcionales:</strong> Validación de cada módulo contra los criterios de aceptación definidos en el Hito 1.',
+                  '<strong>Pruebas de Regresión:</strong> Verificación de que funcionalidades previas no se rompen con nuevos cambios.',
+                  '<strong>Casos de Prueba:</strong> Flujos críticos cubiertos: originación completa, dispersión SPEI, aplicación de pagos, generación de reportes, cierre contable.'
                 ],
                 rules: [
-                  'Cobertura mínima 80% en lógica crítica (cálculos, workflow).',
-                  'Los E2E cubren los 3 flujos principales del sistema.',
-                  'Un PR no puede mergear si falla cualquier prueba.'
+                  'Cada módulo entregado debe pasar prueba funcional antes de pasar a QA final.',
+                  'Los defectos encontrados se clasifican por severidad (P0-P3) y se corrigen antes del Go-Live.',
+                  'Las pruebas de regresión se ejecutan tras cada corrección de defecto.'
                 ],
-                estimation: { effort: '12 días', priority: 'Alta', team: '1 QA + 1 Backend', complexity: 'Media',
-                  tags: ['Playwright', 'Vitest', 'GitHub Actions', 'Next.js'] }
+                estimation: { effort: '8 días', priority: 'Crítica', team: '1 QA + 1 Full-Stack', complexity: 'Alta',
+                  tags: ['Testing Manual', 'Supabase', 'Next.js'] }
               }
             },
-            { code: '9.1.2', title: 'Pruebas de Estrés y Rendimiento', level: 4,
+            { code: '9.1.2', hito: 5, title: 'Pruebas de Estrés y Rendimiento', level: 4,
               details: {
                 description: [
                   '<strong>Load Testing:</strong> Simulación de múltiples usuarios concurrentes.',
@@ -2098,7 +2220,7 @@ const data = {
         {
           code: '9.2', title: 'Documentación', level: 3,
           children: [
-            { code: '9.2.1', title: 'Manuales de Usuario por Rol', level: 4,
+            { code: '9.2.1', hito: 5, title: 'Manuales de Usuario por Rol', level: 4,
               details: {
                 description: [
                   '<strong>Manuales Específicos:</strong> Uno por rol (analista, mesa de control, tesorería, admin, super admin).',
@@ -2114,7 +2236,7 @@ const data = {
                   tags: ['Notion', 'Loom', 'Markdown'] }
               }
             },
-            { code: '9.2.2', title: 'Documentación Técnica y de API', level: 4,
+            { code: '9.2.2', hito: 5, title: 'Documentación Técnica y de API', level: 4,
               details: {
                 description: [
                   '<strong>Arquitectura:</strong> Diagramas del sistema, BD, integraciones.',
@@ -2135,10 +2257,10 @@ const data = {
         {
           code: '9.3', title: 'Lanzamiento y Soporte', level: 3,
           children: [
-            { code: '9.3.1', title: 'Go-Live y Corte a Producción', level: 4,
+            { code: '9.3.1', hito: 5, title: 'Go-Live y Corte a Producción', level: 4,
               details: {
                 description: [
-                  '<strong>Plan de Cutover:</strong> Secuencia detallada para el switch Odoo → SOFOM.',
+                  '<strong>Plan de Go-Live:</strong> Secuencia detallada de actividades para el lanzamiento a producción.',
                   '<strong>Ventana Controlada:</strong> Go-live en fin de semana con equipo de guardia.',
                   '<strong>Verificación Post-Go-Live:</strong> Smoke tests y validación de los primeros movimientos.'
                 ],
@@ -2151,20 +2273,58 @@ const data = {
                   tags: ['Vercel', 'Supabase', 'Runbook'] }
               }
             },
-            { code: '9.3.2', title: 'Soporte Post-Lanzamiento (3 meses)', level: 4,
+            { code: '9.3.2', garantia: true, title: 'Garantía de 4 Meses sobre Bugs y Vicios Ocultos', level: 4,
               details: {
                 description: [
-                  '<strong>Ventana de Hypercare:</strong> 3 meses posteriores al Go-Live con equipo dedicado.',
-                  '<strong>SLA Definido:</strong> Tiempos de respuesta por severidad (P0, P1, P2, P3).',
-                  '<strong>Mejora Continua:</strong> Priorización de bugs y ajustes con el cliente.'
+                  '<strong>Garantía contractual (Contrato cl. 8 · Anexo A §7.3):</strong> Cuatro (4) meses calendario posteriores al Go-Live. NO es soporte general ni mantenimiento.',
+                  '<strong>Alcance:</strong> Corrección de bugs y vicios ocultos atribuibles al Proveedor (errores de implementación, no cambios de lógica).',
+                  '<strong>Fuera de garantía:</strong> Cambios de lógica aceptada, nuevas funcionalidades, regulación, servicios externos del Cliente, o cualquier modificación del código fuente por el Cliente (anula la garantía de inmediato y en totalidad).',
+                  '<strong>Requisito:</strong> Reportar con evidencia documental (caso, datos entrada, resultado esperado vs obtenido).'
                 ],
                 rules: [
-                  'Reportes semanales de incidencias al cliente.',
-                  'Los bugs críticos (P0) se atienden en <2 horas.',
-                  'Al término de los 3 meses, se entrega transferencia formal a soporte regular.'
+                  'Vigencia: 4 meses calendario a partir del Go-Live (o fecha programada si el retraso es del Cliente).',
+                  'SLA P0 (sistema no operable): respuesta en menos de 2 horas hábiles.',
+                  'SLA P1 (función crítica afectada): respuesta en menos de 8 horas hábiles.',
+                  'SLA P2/P3: ciclo semanal.',
+                  'Cualquier modificación del código fuente por el Cliente anula la garantía de manera inmediata y total.',
+                  'Concluida la garantía, soporte adicional requiere contrato independiente (Anexo A §7.3).'
                 ],
-                estimation: { effort: '3 meses', priority: 'Alta', team: '2 Ingenieros + 1 PM', complexity: 'Media',
-                  tags: ['Vercel', 'Supabase', 'Sentry', 'Linear'] }
+                estimation: { effort: '4 meses', priority: 'Alta', team: '2 Ingenieros + 1 PM', complexity: 'Media',
+                  tags: ['Vercel', 'Supabase', 'Contrato Anexo A'] }
+              }
+            },
+            { code: '9.3.3', hito: 5, title: 'Capacitación Funcional al Equipo del Cliente (30 h)', level: 4,
+              details: {
+                description: [
+                  '<strong>Contrato cl. 10 · Anexo A §7.5:</strong> Hasta treinta (30) horas efectivas de capacitación incluidas en el Hito 5.',
+                  '<strong>Capacitación por rol:</strong> Sesiones de uso del sistema para cada perfil (analista, mesa de control, tesorería, administrador, super admin).',
+                  '<strong>Alcance:</strong> Uso del sistema y arquitectura general. NO incluye programación, ni uso técnico de Supabase, Vercel, GitHub o n8n.',
+                  '<strong>Material de apoyo:</strong> Manuales por rol entregados junto con la capacitación.'
+                ],
+                rules: [
+                  'La capacitación se realiza con el sistema ya en ambiente de producción o staging final.',
+                  'Se asume que el personal técnico del Cliente sabe operar las herramientas de infraestructura.',
+                  'Sesiones grabadas y disponibles para consulta posterior.'
+                ],
+                estimation: { effort: '3 días', priority: 'Alta', team: '1 PM + 1 Full-Stack', complexity: 'Baja',
+                  tags: ['Zoom', 'Loom', 'Manuales'] }
+              }
+            },
+            { code: '9.3.4', hito: 5, title: 'Migración de Infraestructura a Cuentas del Cliente', level: 4,
+              details: {
+                description: [
+                  '<strong>Transferencia de repositorio:</strong> El repositorio GitHub se transfiere a la organización del Cliente.',
+                  '<strong>Migración Vercel:</strong> El proyecto pasa de la cuenta del Proveedor a la cuenta Vercel Pro del Cliente; se reconfiguran dominios, variables de entorno y secrets.',
+                  '<strong>Migración Supabase:</strong> El proyecto Supabase se transfiere o replica en la cuenta Pro del Cliente con todas las políticas RLS, funciones y datos de producción.',
+                  '<strong>Entrega del código fuente:</strong> Entrega formal del código fuente y cesión de derechos de autor contra pago confirmado del Hito 5.'
+                ],
+                rules: [
+                  'La transferencia solo se ejecuta tras recibir el pago total del Hito 5.',
+                  'El Cliente debe tener las cuentas Vercel Pro y Supabase Pro activas antes de iniciar la migración.',
+                  'Se realiza en ventana de mantenimiento programada con plan de rollback documentado.'
+                ],
+                estimation: { effort: '2 días', priority: 'Crítica', team: '1 DevOps + 1 Backend', complexity: 'Media',
+                  tags: ['Vercel', 'Supabase', 'GitHub', 'DNS'] }
               }
             }
           ]
@@ -2183,6 +2343,8 @@ function renderNode(node) {
   if (node.tbd) li.classList.add('tbd');
   if (node.outOfScope) li.classList.add('out-of-scope');
   if (node.separateProject) li.classList.add('separate-project');
+  if (node.garantia) li.classList.add('garantia');
+  if (node.externalProvider) li.classList.add('external-provider');
 
   const box = document.createElement('div');
   box.className = 'node-box';
@@ -2214,8 +2376,25 @@ function renderNode(node) {
   } else if (node.tbd) {
     const badge = document.createElement('div');
     badge.className = 'tbd-badge';
-    badge.textContent = 'TBD · Posible fuera de alcance';
+    badge.textContent = 'TBD · Por confirmar';
     box.appendChild(badge);
+  } else if (node.externalProvider) {
+    const badge = document.createElement('div');
+    badge.className = 'external-provider-badge';
+    badge.textContent = 'Incluido · Prov. externo';
+    box.appendChild(badge);
+  } else if (node.garantia) {
+    const badge = document.createElement('div');
+    badge.className = 'garantia-badge';
+    badge.textContent = 'Garantía 4 meses';
+    box.appendChild(badge);
+  }
+
+  if (node.hito && !node.children) {
+    const hitoBadge = document.createElement('div');
+    hitoBadge.className = 'hito-badge h' + node.hito;
+    hitoBadge.textContent = 'Hito ' + node.hito;
+    box.appendChild(hitoBadge);
   }
 
   const hasChildren = node.children && node.children.length > 0;
@@ -2311,12 +2490,18 @@ function openModal(node) {
     modal.classList.toggle('tbd', !!node.tbd);
     modal.classList.toggle('out-of-scope', !!node.outOfScope);
     modal.classList.toggle('separate-project', !!node.separateProject);
+    modal.classList.toggle('garantia', !!node.garantia);
+    modal.classList.toggle('external-provider', !!node.externalProvider);
+    modal.classList.toggle('garantia', !!node.garantia);
   }
   let statusSuffix = '';
   if (node.separateProject) statusSuffix = '  ·  N/A · PROYECTO APARTE';
   else if (node.outOfScope) statusSuffix = '  ·  FUERA DE ALCANCE';
-  else if (node.tbd) statusSuffix = '  ·  TBD (posible fuera de alcance)';
-  document.getElementById('modal-code').textContent = node.code + ' · Nivel ' + node.level + statusSuffix;
+  else if (node.tbd) statusSuffix = '  ·  TBD (confirmar con Cliente / proveedor)';
+  else if (node.externalProvider) statusSuffix = '  ·  INCLUIDO (proveedor externo)';
+  else if (node.garantia) statusSuffix = '  ·  GARANTÍA 4 meses (no es hito)';
+  const hitoSuffix = node.hito ? '  ·  Hito ' + node.hito : '';
+  document.getElementById('modal-code').textContent = node.code + ' · Nivel ' + node.level + statusSuffix + hitoSuffix;
 
   // Banner de aviso en el modal
   const banner = document.getElementById('modal-banner');
@@ -2331,7 +2516,15 @@ function openModal(node) {
     banner.style.display = '';
   } else if (node.tbd) {
     banner.classList.add('tbd-banner');
-    banner.innerHTML = '🔴 <strong>TBD · Por definir:</strong> Este alcance está pendiente de validación y puede quedar fuera de la entrega inicial.';
+    banner.innerHTML = '🟠 <strong>TBD · Por confirmar:</strong> Pendiente de definición o confirmación del Cliente antes del hito correspondiente (Anexo A). La integración puede estar incluida; el bloqueante es acuerdo operativo o proveedor API.';
+    banner.style.display = '';
+  } else if (node.externalProvider) {
+    banner.classList.add('external-provider-banner');
+    banner.innerHTML = '🔵 <strong>Incluido · Proveedor externo:</strong> El desarrollo de la integración está en alcance. El Cliente contrata el servicio/API, proporciona sandbox/credenciales y asume costos de terceros (Anexo A).';
+    banner.style.display = '';
+  } else if (node.garantia) {
+    banner.classList.add('garantia-banner-modal');
+    banner.innerHTML = '🟢 <strong>Garantía 4 meses:</strong> Compromiso contractual post Go-Live sobre bugs y vicios ocultos (Contrato cl. 8 · Anexo A §7.3). No es un hito de desarrollo ni soporte general.';
     banner.style.display = '';
   } else {
     banner.style.display = 'none';
@@ -2541,3 +2734,4 @@ searchInput.addEventListener('input', (e) => {
 </script>
 </body>
 </html>
+                                                                                                                                                                                                                                                             
