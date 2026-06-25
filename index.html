@@ -1025,17 +1025,25 @@ const data = {
             { code: '1.1.1', hito: 1, title: 'User Flows y Mapas de Navegación', level: 4,
               details: {
                 description: [
-                  '<strong>Mapeo End-to-End:</strong> Diagramar flujos por rol (solicitante, analista, mesa de control, tesorería, admin, super admin).',
-                  '<strong>Flujos Críticos:</strong> Onboarding digital, workflow de originación (6 estados), kanban de cartera, cobranza y dispersión SPEI.',
-                  '<strong>Caminos Alternos:</strong> Rechazos, reintentos, timeouts y rutas de excepción.'
+                  '<strong>User Flows — Mapeo End-to-End:</strong> Diagramar flujos por rol (solicitante, analista, mesa de control, tesorería, admin, super admin).',
+                  '<strong>User Flows — Flujos Críticos:</strong> Onboarding digital, workflow de originación (6 estados), kanban de cartera, cobranza y dispersión SPEI.',
+                  '<strong>User Flows — Caminos Alternos:</strong> Rechazos, reintentos, timeouts y rutas de excepción.',
+                  '<strong>Mapas de Navegación — Arquitectura de Información:</strong> Inventario de pantallas y vistas por módulo (originación, cartera, cobranza, tesorería, operaciones, reportes, administración); jerarquía módulo → sección → pantalla → modal/drawer.',
+                  '<strong>Mapas de Navegación — Shell y Rutas:</strong> Definir navegación global mobile-first (nav inferior en móvil, sidebar en desktop, header, breadcrumbs); proponer rutas alineadas a la estructura de la app (`features/` por módulo).',
+                  '<strong>Mapas de Navegación — Acceso por Rol:</strong> Matriz rol × módulo × pantalla (qué entradas de menú y rutas ve cada perfil); marcar pantallas solo-admin y solo-super-admin.',
+                  '<strong>Mapas de Navegación — Trazabilidad:</strong> ID único por pantalla (ej. ORI-001, CAR-012) enlazado al wireframe correspondiente en 1.1.2.'
                 ],
                 rules: [
-                  'Cada flujo debe tener punto de entrada y salida definidos.',
-                  'Los flujos críticos requieren validación con stakeholders antes de pasar a wireframes.',
-                  'Mínimo 3 user personas documentadas por rol.'
+                  'User flows: cada flujo debe tener punto de entrada y salida definidos; no mezclar decisiones de layout ni menús.',
+                  'User flows: los flujos críticos requieren validación con stakeholders antes de pasar a wireframes.',
+                  'User flows: mínimo 3 user personas documentadas por rol.',
+                  'Mapas de navegación: un mapa maestro del producto + un mapa simplificado por rol operativo.',
+                  'Mapas de navegación: cada nodo del mapa representa una pantalla o vista wireframeable; modales y drawers se documentan como hijos del nodo padre.',
+                  'Mapas de navegación: validar con stakeholders que ningún módulo crítico quede sin ruta de acceso desde el shell.',
+                  'Mapas de navegación: no documentar pasos de proceso ni decisiones de negocio (eso corresponde a user flows).'
                 ],
                 estimation: { effort: '5 días', priority: 'Alta', team: '1 UX', complexity: 'Media',
-                  tags: ['Figma', 'Miro', 'User Research'] }
+                  tags: ['Figma', 'Miro', 'Whimsical', 'User Research'] }
               }
             },
             { code: '1.1.2', hito: 1, title: 'Wireframes de Baja Fidelidad (Estructura)', level: 4,
@@ -1213,7 +1221,7 @@ const data = {
                 description: [
                   '<strong>Supabase Auth:</strong> Login con email/contraseña, magic link y SSO opcional.',
                   '<strong>TOTP / Email:</strong> 2FA obligatorio para usuarios administrativos.',
-                  '<strong>Recordar Dispositivo:</strong> Opción de confiar en dispositivo por 30 días.'
+                  '<strong>Recordar Dispositivo:</strong> Opción de confiar en dispositivo por 10 días.'
                 ],
                 rules: [
                   '2FA obligatorio para todos los usuarios con rol administrativo.',
@@ -1250,6 +1258,7 @@ const data = {
                 ],
                 rules: [
                   'Las bitácoras no pueden modificarse ni eliminarse por ningún rol.',
+                  'Consulta de bitácoras operativas: solo Super Admin y rol Auditor (6.1.4); Admin tenant no consulta.',
                   'Exportación disponible en formato CSV y JSON para auditorías CNBV.',
                   'Alertas automáticas ante patrones sospechosos (ej. logins desde múltiples países).'
                 ],
@@ -1265,9 +1274,10 @@ const data = {
             { code: '2.3.1', hito: 2, title: 'Catálogos Maestros y Administración', level: 4,
               details: {
                 description: [
-                  '<strong>Catálogos Centralizados:</strong> Estados civiles, ocupaciones, tipos de crédito, documentos requeridos, motivos de operaciones comerciales.',
+                  '<strong>Listas de apoyo:</strong> Estados civiles, ocupaciones, tipos de crédito (como catálogo de selección), documentos requeridos, motivos de operaciones comerciales.',
                   '<strong>Administración por Tenant:</strong> Cada financiera activa/desactiva valores y agrega los propios.',
-                  '<strong>APIs Internas:</strong> Los catálogos se consumen desde todos los módulos.'
+                  '<strong>APIs Internas:</strong> Los catálogos se consumen desde todos los módulos.',
+                  '<strong>User flow:</strong> ADM-005. <strong>No incluye</strong> productos financieros (2.3.4) ni códigos postales (validación en captura 3.2.2).'
                 ],
                 rules: [
                   'Los catálogos maestros son globales pero cada financiera puede activar/desactivar valores.',
@@ -1278,12 +1288,29 @@ const data = {
                   tags: ['Next.js', 'Supabase', 'React'] }
               }
             },
+            { code: '2.3.4', hito: 2, title: 'Catálogo de Productos Configurables', level: 4,
+              details: {
+                description: [
+                  '<strong>Tipos incluidos (Anexo A §4.1):</strong> Crédito Simple, Nómina, Adelanto, Compra de Cartera, Renovación, etc.',
+                  '<strong>Parámetros por producto:</strong> Comisiones, tasa fija, IVA, plazos/montos/edades min-máx, periodicidad, días de gracia, amortización francés.',
+                  '<strong>User flow:</strong> ADM-006. Base obligatoria antes de convenios (2.3.2) y promotores (2.3.5).'
+                ],
+                rules: [
+                  'No se permite cambiar parámetros críticos de productos con créditos ya otorgados.',
+                  'Esquema de amortización incluido: Sistema Francés (saldos insolutos). Otros esquemas = cambio de alcance.',
+                  'Todo cambio queda auditado.'
+                ],
+                estimation: { effort: '8 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Alta',
+                  tags: ['Next.js', 'Supabase', 'Decimal.js', 'Rules Engine'] }
+              }
+            },
             { code: '2.3.2', hito: 2, title: 'Configuración por Convenio (Tasas, Montos, Edades)', level: 4,
               details: {
                 description: [
-                  '<strong>Convenios como Productos:</strong> Cada convenio/empresa cliente tiene su producto parametrizable.',
-                  '<strong>Parámetros:</strong> Tasa fija o variable, plazos permitidos, monto mínimo/máximo, edad mínima/máxima.',
-                  '<strong>Vigencias:</strong> Los cambios de tasa tienen fecha de entrada en vigor.'
+                  '<strong>Convenios por empresa/canal:</strong> Acuerdo que usa un <strong>Producto</strong> (2.3.4) y añade parámetros propios (tasa preferencial, topes, edades).',
+                  '<strong>Parámetros:</strong> Tasa fija, plazos permitidos, monto mínimo/máximo, edad mínima/máxima.',
+                  '<strong>Vigencias:</strong> Los cambios de tasa tienen fecha de entrada en vigor.',
+                  '<strong>User flow:</strong> ADM-008.'
                 ],
                 rules: [
                   'No se permite cambiar parámetros de créditos ya otorgados.',
@@ -1308,6 +1335,38 @@ const data = {
                 ],
                 estimation: { effort: '7 días', priority: 'Media', team: '1 Full-Stack', complexity: 'Media',
                   tags: ['Docx-Templater', 'PDF/A', 'Supabase Storage'] }
+              }
+            },
+            { code: '2.3.5', hito: 2, title: 'Promotores por Producto', level: 4,
+              details: {
+                description: [
+                  '<strong>Registro comercial:</strong> Promotores asociados a cada producto (Anexo A §4).',
+                  '<strong>Captura:</strong> Selección en originación para trazabilidad.',
+                  '<strong>User flow:</strong> ADM-007.'
+                ],
+                rules: [
+                  'Código o identificador único por tenant.',
+                  'Desactivación lógica sin borrar histórico.',
+                  'Requiere producto activo (2.3.4).'
+                ],
+                estimation: { effort: '4 días', priority: 'Media', team: '1 Full-Stack', complexity: 'Baja',
+                  tags: ['Next.js', 'Supabase'] }
+              }
+            },
+            { code: '2.3.6', hito: 2, title: 'Ajustes Operativos por Tenant', level: 4,
+              details: {
+                description: [
+                  '<strong>Panel de toggles e umbrales:</strong> OCR Gemini (3.3.1); ZapSign (3.4.2); <strong>Círculo de Crédito (3.3.2)</strong>; <strong>listas negras (3.3.3)</strong>; umbral saldo bajo (5.2.2); vigencia solicitud (3.2.2).',
+                  '<strong>User flow:</strong> ADM-012. <strong>Rol:</strong> Admin tenant (credenciales/API por financiera); Super Admin no opera estos toggles.',
+                  '<strong>Patrón:</strong> Integraciones externas on/off por tenant; off = ruta manual documentada en MC (HU-3.1.2).'
+                ],
+                rules: [
+                  'Activar integración externa requiere credenciales/sandbox del Cliente configuradas.',
+                  'Todo cambio queda en bitácora inmutable (2.2.4).',
+                  'Si toggle off, flujos dependientes muestran aviso o ruta alterna documentada.'
+                ],
+                estimation: { effort: '3 días', priority: 'Media', team: '1 Full-Stack', complexity: 'Baja',
+                  tags: ['Next.js', 'Supabase', 'Feature Flags'] }
               }
             }
           ]
@@ -1466,7 +1525,7 @@ const data = {
                 description: [
                   '<strong>Extracción Automática:</strong> INE, comprobantes de domicilio, recibos de nómina, CURP mediante Google Gemini 1.5 Pro.',
                   '<strong>Prellenado:</strong> Los datos extraídos prellenan automáticamente el formulario del solicitante.',
-                  '<strong>INCLUIDO en contrato (Anexo A §3.3.1):</strong> Integración de desarrollo incluida; módulo configurable on/off por tenant.',
+                  '<strong>INCLUIDO en contrato (Anexo A §3.3.1):</strong> Integración de desarrollo incluida; módulo configurable on/off por tenant (panel ADM-012 / 2.3.6).',
                   '<strong>Costo API:</strong> El Cliente contrata y paga el consumo de Google Gemini en producción (~$15 USD/mes estimado).',
                   '<strong>Sandbox requerido:</strong> El Cliente debe proporcionar cuenta sandbox de Google Gemini para pruebas previas al Go-Live. Las credenciales se configuran como variables de entorno.'
                 ],
@@ -1482,13 +1541,14 @@ const data = {
               details: {
                 description: [
                   '<strong>Integración API:</strong> Consulta en vivo a Círculo de Crédito (score y reporte de obligaciones vigentes y vencidas). La contratación de la API corre por cuenta del Cliente.',
+                  '<strong>Toggle por tenant:</strong> On/off en ADM-012 (2.3.6). Off → validación manual en MC (HU-3.1.2).',
                   '<strong>Almacenamiento Controlado:</strong> El reporte se guarda cifrado con acceso limitado por rol.',
                   '<strong>Trazabilidad:</strong> Cada consulta queda registrada en bitácora con fecha, usuario y resultado.'
                 ],
                 rules: [
                   'Consulta con autorización expresa del solicitante.',
                   'Los resultados se almacenan por un máximo de 90 días.',
-                  'La consulta del aval es obligatoria.'
+                  'La consulta del aval es obligatoria cuando la integración Círculo está activa en el tenant.'
                 ],
                 estimation: { effort: '8 días', priority: 'Crítica', team: '1 Backend', complexity: 'Alta',
                   tags: ['Círculo de Crédito', 'API REST', 'Supabase'] }
@@ -1500,10 +1560,11 @@ const data = {
                   '<strong>Listas Consultadas:</strong> OFAC, SAT (69-B), PEP (Personas Políticamente Expuestas).',
                   '<strong>Match Automático:</strong> El sistema compara acreditado, aval y testigos contra todas las listas.',
                   '<strong>Trazabilidad:</strong> Evidencia de la consulta y resultado se archiva con la solicitud.',
-                  '<strong>TBD — Proveedor API pendiente (Anexo A §3.3.3):</strong> La integración está INCLUIDA en el desarrollo. El Cliente debe elegir y contratar el proveedor (Truora, MetaMap, Comply Advantage u otro con API REST) y proporcionar sandbox. Si no se confirma antes del Hito 2, el módulo queda bloqueado hasta tener accesos.'
+                  '<strong>TBD — Proveedor API pendiente (Anexo A §3.3.3):</strong> La integración está INCLUIDA en el desarrollo. El Cliente debe elegir y contratar el proveedor (Truora, MetaMap, Comply Advantage u otro con API REST) y proporcionar sandbox. Si no se confirma antes del Hito 2, el módulo queda bloqueado hasta tener accesos.',
+                  '<strong>Toggle por tenant:</strong> On/off en ADM-012 (2.3.6). Off → sin bloqueo automático; revisión manual MC/Oficial PLD.'
                 ],
                 rules: [
-                  'Coincidencia en OFAC o PEP → rechazo automático con escalamiento al Oficial de Cumplimiento.',
+                  'Coincidencia en OFAC o PEP → rechazo automático con escalamiento al Oficial de Cumplimiento (solo si integración activa).',
                   'Las listas se actualizan automáticamente a diario.',
                   'Las consultas a listas negras quedan en bitácora inmutable.'
                 ],
@@ -1535,7 +1596,8 @@ const data = {
             { code: '3.4.2', hito: 3, title: 'Firma Digital NOM-151 (Proveedor externo / ZapSign)', level: 4, externalProvider: true,
               details: {
                 description: [
-                  '<strong>INCLUIDO en contrato (Anexo A §3.4.2):</strong> Integración de firma electrónica avanzada NOM-151-SCFI-2016 incluida en el desarrollo.',
+                  '<strong>INCLUIDO en contrato (Anexo A §3.4.2 · D-023):</strong> Integración de firma electrónica avanzada NOM-151-SCFI-2016 incluida en el desarrollo.',
+                  '<strong>Módulo configurable:</strong> Habilitar/deshabilitar firma digital ZapSign por tenant desde panel ADM-012 (2.3.6), mismo patrón que OCR.',
                   '<strong>Proveedor externo:</strong> El Cliente contrata directamente con el proveedor de firma (ej. ZapSign u otro equivalente NOM-151).',
                   '<strong>Constancia NOM-151:</strong> Cada documento firmado regresa con constancia y timestamp.',
                   '<strong>Multi-firmante:</strong> Acreditado, aval, testigos y representante legal en el mismo expediente.',
@@ -2171,6 +2233,49 @@ const data = {
                 ],
                 estimation: { effort: '7 días', priority: 'Media', team: '1 Backend', complexity: 'Media',
                   tags: ['Next.js API Routes', 'Supabase', 'OpenAPI'] }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      code: '8.0', title: 'PLD de Onboarding y Matriz de Riesgo', level: 2,
+      children: [
+        {
+          code: '8.1', title: 'Cumplimiento PLD en Originación', level: 3,
+          children: [
+            { code: '8.1.1', hito: 2, title: 'Cuestionario PLD Configurable en Onboarding', level: 4,
+              details: {
+                description: [
+                  '<strong>Motor genérico de cuestionarios:</strong> Preguntas configurables por tenant (origen de recursos, PEP, beneficiario controlador, etc.).',
+                  '<strong>Panel de configuración:</strong> ADM-009 (admin u Oficial de Cumplimiento).',
+                  '<strong>Captura operativa:</strong> Pestaña PLD en expediente (PLD-001 / 3.2.2).',
+                  '<strong>INCLUIDO (Anexo A §4.4):</strong> PLD de onboarding; no incluye monitoreo PLD continuo.'
+                ],
+                rules: [
+                  'Respuestas obligatorias auditadas en expediente.',
+                  'Versionado de cuestionario sin afectar expedientes en curso.',
+                  'Plantilla base SOFOM si Cliente no entrega insumos al inicio del Hito 2.'
+                ],
+                estimation: { effort: '5 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Media',
+                  tags: ['Next.js', 'Supabase', 'Questionnaire Engine'] }
+              }
+            },
+            { code: '8.1.2', hito: 2, title: 'Matriz de Riesgo (Scoring Bajo / Medio / Alto)', level: 4,
+              details: {
+                description: [
+                  '<strong>Motor de scoring:</strong> Pesos por respuesta, umbrales y acciones automáticas.',
+                  '<strong>Panel de configuración:</strong> ADM-009; requiere insumos del Oficial de Cumplimiento (Anexo A §4.4).',
+                  '<strong>Operación:</strong> Clasificación al originar (PLD-002); alertas al Oficial.'
+                ],
+                rules: [
+                  'Parametrización final condicionada a insumos escritos del Cliente.',
+                  'Acciones por nivel de riesgo documentadas (revisión, escalamiento, alerta).',
+                  'Score y evidencia conservados en expediente.'
+                ],
+                estimation: { effort: '6 días', priority: 'Alta', team: '1 Full-Stack', complexity: 'Alta',
+                  tags: ['Next.js', 'Supabase', 'Rules Engine'] }
               }
             }
           ]
